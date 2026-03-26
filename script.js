@@ -16,7 +16,28 @@ async function loadNews() {
         renderNews(data);
     }
 }
+// script.js ထဲမှာ ထည့်ရန်
+let allNewsData = []; // သတင်းအားလုံးကို ခေတ္တသိမ်းထားရန်
 
+async function loadNews() {
+    const { data, error } = await supabase.from('news').select('*').order('created_at', { ascending: false });
+    if (data) {
+        allNewsData = data; // Data တွေကို variable ထဲသိမ်း
+        renderNews(data);
+    }
+}
+
+function filterByCategory(cat) {
+    if (cat === 'အားလုံး') {
+        renderNews(allNewsData);
+    } else {
+        const filtered = allNewsData.filter(item => item.category === cat);
+        renderNews(filtered);
+    }
+}
+
+// renderNews ထဲမှာ Category Badge လေးပြအောင် ပြင်ပါ
+// ${news.category} ကို Card template ထဲမှာ ထည့်လိုက်ပါ
 function renderNews(newsArray) {
     const container = document.getElementById('searchResults');
     if (newsArray.length === 0) {
