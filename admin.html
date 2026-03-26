@@ -37,22 +37,12 @@
         .loading { text-align: center; padding: 20px; color: #3b82f6; }
         .preview-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-top: 15px; }
         .preview-card img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
-        .login-box { max-width: 400px; margin: 100px auto; background: white; padding: 35px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; }
-        .login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 16px; }
-        .login-box button { width: 100%; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; }
         @media (max-width: 768px) { .form-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <div id="app">
-        <div class="login-box">
-            <h2>🔐 Admin Panel</h2>
-            <p style="color:#64748b; margin:15px 0;">စကားဝှက်ထည့်ပါ</p>
-            <input type="password" id="adminPassword" placeholder="စကားဝှက်">
-            <button onclick="checkPassword()">ဝင်ရန်</button>
-            <p style="margin-top:15px; font-size:12px; color:#94a3b8;">Default: admin123</p>
-            <a href="index.html" style="display:block; margin-top:15px; color:#3b82f6;">← ပင်မစာမျက်နှာသို့</a>
-        </div>
+        <div style="text-align:center; padding:50px;">📡 စတင်နေပါသည်...</div>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -60,34 +50,27 @@
         // ============ SUPABASE CONFIGURATION ============
         const SUPABASE_URL = 'https://tlmzcasltbihfbnupguq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';  // ← ကိုယ့် anon key ထည့်ပါ
-        const ADMIN_PASSWORD = 'admin123';  // လိုချင်ရင် ဒီမှာ ပြောင်းပါ
         
         let supabaseClient = null;
         let importedData = null;
-        let isAuthenticated = false;
         
-        // ============ CHECK PASSWORD ============
-        window.checkPassword = function() {
-            const password = document.getElementById('adminPassword').value;
-            
-            if (password === ADMIN_PASSWORD) {
-                isAuthenticated = true;
-                initAdminPanel();
-            } else {
-                alert('စကားဝှက် မှားနေပါသည်။');
-            }
-        };
-        
-        // ============ INIT ADMIN PANEL ============
-        async function initAdminPanel() {
+        // ============ INIT ============
+        async function init() {
             try {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 
                 // Test connection
                 const { error } = await supabaseClient.from('news').select('count').limit(1);
                 if (error) {
-                    console.error('Supabase connection error:', error);
-                    document.getElementById('app').innerHTML = '<div class="login-box"><h2>❌ Supabase ချိတ်ဆက်မှု မအောင်မြင်ပါ</h2><p>URL နှင့် Key ကိုစစ်ဆေးပါ။</p><a href="index.html">← နောက်သို့</a></div>';
+                    console.error('Supabase error:', error);
+                    document.getElementById('app').innerHTML = `
+                        <div style="text-align:center; padding:50px; background:white; border-radius:16px; margin:50px auto; max-width:500px;">
+                            <h2>❌ Supabase ချိတ်ဆက်မှု မအောင်မြင်ပါ</h2>
+                            <p style="color:#ef4444;">${error.message}</p>
+                            <p>URL နှင့် Key ကို စစ်ဆေးပါ။</p>
+                            <a href="index.html" style="color:#3b82f6;">← ပင်မစာမျက်နှာသို့</a>
+                        </div>
+                    `;
                     return;
                 }
                 
@@ -97,7 +80,13 @@
                 
             } catch (err) {
                 console.error('Init error:', err);
-                document.getElementById('app').innerHTML = '<div class="login-box"><h2>❌ အမှားရှိနေပါသည်</h2><p>' + err.message + '</p><a href="index.html">← နောက်သို့</a></div>';
+                document.getElementById('app').innerHTML = `
+                    <div style="text-align:center; padding:50px;">
+                        <h2>❌ အမှားရှိနေပါသည်</h2>
+                        <p>${err.message}</p>
+                        <a href="index.html">← ပင်မစာမျက်နှာသို့</a>
+                    </div>
+                `;
             }
         }
         
@@ -108,7 +97,6 @@
                     <div class="admin-header">
                         <h1>👑 Admin Panel - သတင်းစီမံခန့်ခွဲမှု</h1>
                         <div>
-                            <button class="btn btn-secondary" onclick="logout()" style="background:#ef4444;">🚪 ထွက်ရန်</button>
                             <a href="index.html" class="back-link">🏠 Frontend</a>
                         </div>
                     </div>
@@ -168,12 +156,6 @@
             `;
             document.getElementById('app').innerHTML = html;
         }
-        
-        // ============ LOGOUT ============
-        window.logout = function() {
-            isAuthenticated = false;
-            location.reload();
-        };
         
         // ============ SHOW MESSAGE ============
         function showMessage(msg, type) {
@@ -394,17 +376,19 @@
                     return;
                 }
                 
-                let html = '<table><thead><tr><th>ID</th><th>ခေါင်းစဉ်</th><th>အမျိုးအစား</th><th>ရင်းမြစ်</th><th>လုပ်ဆောင်ချက်</th></tr></thead><tbody>';
+                let html = ' <table> <thead> <tr> <th>ID</th> <th>ခေါင်းစဉ်</th> <th>အမျိုးအစား</th> <th>ရင်းမြစ်</th> <th>လုပ်ဆောင်ချက်</th> </tr> </thead> <tbody>';
                 for (const news of data) {
-                    html += `<tr>
-                        <td>${news.id}</td>
-                        <td style="max-width:250px;">${escapeHtml(news.title)}</td>
-                        <td>${escapeHtml(news.category || '-')}</td>
-                        <td>${escapeHtml(news.source || '-')}</td>
-                        <td><button class="btn btn-danger" onclick="deleteNews(${news.id})" style="padding:5px 10px;">🗑️ ဖျက်</button></td>
-                    </tr>`;
+                    html += `
+                        <tr>
+                            <td>${news.id}</td>
+                            <td style="max-width:250px;">${escapeHtml(news.title)}</td>
+                            <td>${escapeHtml(news.category || '-')}</td>
+                            <td>${escapeHtml(news.source || '-')}</td>
+                            <td><button class="btn btn-danger" onclick="deleteNews(${news.id})" style="padding:5px 10px;">🗑️ ဖျက်</button></td>
+                        </tr>
+                    `;
                 }
-                html += '</tbody></table>';
+                html += '</tbody> </table>';
                 container.innerHTML = html;
                 
             } catch (err) {
@@ -441,7 +425,8 @@
             return div.innerHTML;
         }
         
-        // No auto init - wait for password
+        // ============ START ============
+        init();
     </script>
 </body>
 </html>
