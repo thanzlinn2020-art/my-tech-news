@@ -19,7 +19,6 @@ async function fetchMetadata() {
     fetchBtn.disabled = true;
 
     try {
-        // LinkPreview API (Free Tier)
         const response = await fetch(`https://api.linkpreview.net/?key=56d367468686e065759714856037a1a4&q=${encodeURIComponent(url)}`);
         const data = await response.json();
 
