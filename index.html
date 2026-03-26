@@ -6,413 +6,54 @@
     <title>မြန်မာနည်းပညာသတင်း</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Noto Sans Myanmar', 'Pyidaungsu', sans-serif;
-            line-height: 1.6;
-            color: #1e293b;
-            background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
-        }
-        
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-        
-        /* Navigation */
-        .navbar {
-            background: #0f172a;
-            color: white;
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .navbar .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .nav-brand h1 {
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-        
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 1.5rem;
-        }
-        
-        .nav-menu a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        
-        .nav-menu a:hover {
-            color: #3b82f6;
-        }
-        
-        .hamburger {
-            display: none;
-            cursor: pointer;
-            flex-direction: column;
-            gap: 5px;
-        }
-        
-        .hamburger span {
-            display: block;
-            width: 25px;
-            height: 3px;
-            background: white;
-            border-radius: 3px;
-        }
-        
-        /* Hero */
-        .hero {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #3b82f6 100%);
-            color: white;
-            padding: 120px 0 80px;
-            text-align: center;
-            margin-top: 60px;
-        }
-        
-        .hero h1 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        .hero p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .btn-primary {
-            display: inline-block;
-            background: #3b82f6;
-            color: white;
-            padding: 12px 32px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn-primary:hover {
-            background: #2563eb;
-            transform: translateY(-2px);
-        }
-        
-        /* Sections */
-        .section {
-            padding: 60px 0;
-        }
-        
-        .section-title {
-            text-align: center;
-            font-size: 1.8rem;
-            margin-bottom: 2rem;
-            color: #0f172a;
-        }
-        
-        .bg-light {
-            background: #f8fafc;
-        }
-        
-        /* Search */
-        .search-container {
-            margin-bottom: 2rem;
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: 14px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-family: inherit;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: #3b82f6;
-        }
-        
-        /* Results Grid */
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .result-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: all 0.3s;
-        }
-        
-        .result-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-        }
-        
-        .result-card h3 a {
-            color: #0f172a;
-            text-decoration: none;
-        }
-        
-        .result-card h3 a:hover {
-            color: #3b82f6;
-        }
-        
-        .snippet {
-            color: #475569;
-            margin: 0.75rem 0;
-        }
-        
-        .result-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #e2e8f0;
-        }
-        
-        .reliability-badge {
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .reliability-badge.high {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-        
-        .reliability-badge.medium {
-            background: #fef3c7;
-            color: #b45309;
-        }
-        
-        .reliability-badge.low {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-        
-        .save-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #3b82f6;
-            font-size: 0.875rem;
-            padding: 4px 12px;
-            border-radius: 50px;
-            transition: all 0.3s;
-        }
-        
-        .save-btn:hover {
-            background: #3b82f6;
-            color: white;
-        }
-        
-        /* News Grid */
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .news-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border-left: 4px solid #3b82f6;
-        }
-        
-        .news-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-        }
-        
-        .news-badge {
-            display: inline-block;
-            background: #3b82f6;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            margin-bottom: 0.75rem;
-        }
-        
-        .news-card h3 a {
-            color: #0f172a;
-            text-decoration: none;
-        }
-        
-        .read-more {
-            display: inline-block;
-            color: #3b82f6;
-            text-decoration: none;
-            margin-top: 0.75rem;
-        }
-        
-        /* About */
-        .about-content {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-        }
-        
-        .features {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .feature {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        /* Footer */
-        .footer {
-            background: #0f172a;
-            color: white;
-            padding: 3rem 0 1.5rem;
-            margin-top: 2rem;
-        }
-        
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .footer-section h3 {
-            margin-bottom: 1rem;
-        }
-        
-        .footer-section a {
-            color: #94a3b8;
-            text-decoration: none;
-        }
-        
-        .footer-section a:hover {
-            color: white;
-        }
-        
-        .footer-bottom {
-            text-align: center;
-            padding-top: 1.5rem;
-            border-top: 1px solid #334155;
-            color: #94a3b8;
-        }
-        
-        /* Loading Spinner */
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            font-size: 1.2rem;
-            color: #3b82f6;
-        }
-        
-        /* Back to Top */
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            background: #3b82f6;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-            z-index: 999;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        
-        .back-to-top.show {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        /* Responsive */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans Myanmar', sans-serif; line-height: 1.6; color: #1e293b; background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%); }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+        .navbar { background: #0f172a; color: white; padding: 1rem 0; position: fixed; width: 100%; top: 0; z-index: 1000; }
+        .navbar .container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand h1 { font-size: 1.2rem; }
+        .nav-menu { display: flex; list-style: none; gap: 1.5rem; }
+        .nav-menu a { color: white; text-decoration: none; }
+        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+        .hamburger span { width: 25px; height: 3px; background: white; border-radius: 3px; }
+        .hero { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #3b82f6 100%); color: white; padding: 120px 0 80px; text-align: center; margin-top: 60px; }
+        .hero h1 { font-size: 1.8rem; margin-bottom: 1rem; }
+        .btn-primary { display: inline-block; background: #3b82f6; color: white; padding: 12px 32px; border-radius: 50px; text-decoration: none; font-weight: 600; }
+        .section { padding: 60px 0; }
+        .section-title { text-align: center; font-size: 1.8rem; margin-bottom: 2rem; color: #0f172a; }
+        .bg-light { background: #f8fafc; }
+        .search-input { width: 100%; padding: 14px 20px; border: 2px solid #e2e8f0; border-radius: 50px; font-size: 1rem; margin-bottom: 2rem; }
+        .results-grid, .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; }
+        .result-card, .news-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.3s; }
+        .result-card:hover, .news-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+        .news-card { border-left: 4px solid #3b82f6; }
+        .news-badge { display: inline-block; background: #3b82f6; color: white; padding: 4px 12px; border-radius: 50px; font-size: 0.7rem; margin-bottom: 0.75rem; }
+        .result-card h3 a, .news-card h3 a { color: #0f172a; text-decoration: none; }
+        .snippet, .news-summary { color: #475569; margin: 0.75rem 0; }
+        .read-more { color: #3b82f6; text-decoration: none; }
+        .result-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; }
+        .reliability-badge { padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; }
+        .reliability-badge.high { background: #dbeafe; color: #1e40af; }
+        .reliability-badge.medium { background: #fef3c7; color: #b45309; }
+        .save-btn { background: none; border: none; cursor: pointer; color: #3b82f6; padding: 4px 12px; border-radius: 50px; }
+        .about-content { max-width: 800px; margin: 0 auto; text-align: center; background: white; padding: 2rem; border-radius: 16px; }
+        .features { display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; flex-wrap: wrap; }
+        .footer { background: #0f172a; color: white; padding: 3rem 0 1.5rem; margin-top: 2rem; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+        .footer-bottom { text-align: center; padding-top: 1.5rem; border-top: 1px solid #334155; color: #94a3b8; }
+        .loading { text-align: center; padding: 2rem; color: #3b82f6; }
+        .back-to-top { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; background: #3b82f6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .back-to-top.show { opacity: 1; visibility: visible; }
         @media (max-width: 768px) {
-            .hamburger {
-                display: flex;
-            }
-            
-            .nav-menu {
-                position: fixed;
-                left: -100%;
-                top: 70px;
-                flex-direction: column;
-                background: #0f172a;
-                width: 100%;
-                text-align: center;
-                transition: 0.3s;
-                padding: 2rem 0;
-                gap: 1rem;
-            }
-            
-            .nav-menu.active {
-                left: 0;
-            }
-            
-            .hero h1 {
-                font-size: 1.5rem;
-            }
-            
-            .section-title {
-                font-size: 1.3rem;
-            }
-            
-            .results-grid,
-            .news-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .features {
-                flex-direction: column;
-                align-items: center;
-            }
+            .hamburger { display: flex; }
+            .nav-menu { position: fixed; left: -100%; top: 70px; flex-direction: column; background: #0f172a; width: 100%; text-align: center; transition: 0.3s; padding: 2rem 0; }
+            .nav-menu.active { left: 0; }
+            .hero h1 { font-size: 1.5rem; }
+            .results-grid, .news-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-
     <nav class="navbar">
         <div class="container">
             <div class="nav-brand"><h1>🇲🇲 မြန်မာနည်းပညာသတင်း</h1></div>
@@ -423,11 +64,7 @@
                 <li><a href="#about">📖 အကြောင်း</a></li>
                 <li><a href="admin.html">👑 Admin</a></li>
             </ul>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+            <div class="hamburger"><span></span><span></span><span></span></div>
         </div>
     </nav>
     
@@ -442,9 +79,7 @@
     <section id="search" class="section">
         <div class="container">
             <h2 class="section-title">🔍 ရှာဖွေမှုရလဒ်များ</h2>
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="🔎 သတင်းများကို ရှာဖွေရန်..." class="search-input">
-            </div>
+            <input type="text" id="searchInput" placeholder="🔎 သတင်းများကို ရှာဖွေရန်..." class="search-input">
             <div class="results-grid" id="searchResults">
                 <div class="loading">📡 သတင်းများ ဖတ်ရှုနေပါသည်...</div>
             </div>
@@ -477,133 +112,92 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-section">
-                    <h3>🇲🇲 မြန်မာနည်းပညာသတင်း</h3>
-                    <p>မြန်မာနိုင်ငံရဲ့ နံပါတ် ၁ နည်းပညာသတင်းဌာန</p>
-                </div>
-                <div class="footer-section">
-                    <h3>🔗 လင့်ခ်များ</h3>
-                    <ul style="list-style: none;">
-                        <li><a href="#home">ပင်မ</a></li>
-                        <li><a href="#search">ရှာဖွေမှု</a></li>
-                        <li><a href="#news">သတင်းများ</a></li>
-                        <li><a href="admin.html">Admin Panel</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>⏰ အချိန်</h3>
-                    <p id="currentTime"></p>
-                </div>
+                <div class="footer-section"><h3>🇲🇲 မြန်မာနည်းပညာသတင်း</h3><p>မြန်မာနိုင်ငံရဲ့ နံပါတ် ၁ နည်းပညာသတင်းဌာန</p></div>
+                <div class="footer-section"><h3>🔗 လင့်ခ်များ</h3><ul style="list-style:none;"><li><a href="#home">ပင်မ</a></li><li><a href="#search">ရှာဖွေမှု</a></li><li><a href="#news">သတင်းများ</a></li><li><a href="admin.html">Admin Panel</a></li></ul></div>
+                <div class="footer-section"><h3>⏰ အချိန်</h3><p id="currentTime"></p></div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 မြန်မာနည်းပညာသတင်း | Powered by Supabase</p>
-            </div>
+            <div class="footer-bottom"><p>&copy; 2025 မြန်မာနည်းပညာသတင်း | Powered by Supabase</p></div>
         </div>
     </footer>
-    
     <div class="back-to-top" onclick="scrollToTop()">↑</div>
     
-    <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <script>
-        // ============ Supabase Configuration ============
+        // ============ SUPABASE CONFIGURATION ============
         // 🔧 ကိုယ့် Supabase URL နဲ့ Key ကို ဒီမှာ ထည့်ပါ
         const SUPABASE_URL = 'https://tlmzcasltbihfbnupguq.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';  // ကိုယ့် anon key ထည့်ပါ
         
-        // Initialize Supabase
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
-        // ============ Initial Data (Fallback) ============
+        // Initial data (fallback)
         const initialNewsData = [
-            {
-                id: 1,
-                title: "📶 5G ကွန်ရက် စတင်အသုံးပြုနိုင်ပြီ",
-                summary: "မြန်မာနိုင်ငံတွင် 5G ကွန်ရက်ကို စတင်အသုံးပြုနိုင်ပြီဖြစ်ပါသည်။ အမြန်နှုန်း 1Gbps အထိ ရရှိနိုင်မည်ဖြစ်သည်။",
-                category: "5G",
-                source: "Myanmar Tech News",
-                reliability: "high",
-                created_at: new Date().toISOString()
-            },
-            {
-                id: 2,
-                title: "🤖 AI နည်းပညာ ဖွံ့ဖြိုးလာ",
-                summary: "Artificial Intelligence နည်းပညာဖြင့် မြန်မာစာ ဘာသာပြန်စနစ်များ တိုးတက်လာပါသည်။",
-                category: "AI",
-                source: "Myanmar Tech News",
-                reliability: "high",
-                created_at: new Date().toISOString()
-            },
-            {
-                id: 3,
-                title: "🌐 အင်တာနက်အသုံးပြုသူ ၂၀ သန်းကျော်",
-                summary: "မြန်မာနိုင်ငံတွင် အင်တာနက်အသုံးပြုသူဦးရေ ၂၀ သန်းကျော်ရှိလာပြီဖြစ်သည်။",
-                category: "Internet",
-                source: "Myanmar Digital News",
-                reliability: "medium",
-                created_at: new Date().toISOString()
-            }
+            { id: 1, title: "📶 5G ကွန်ရက် စတင်အသုံးပြုနိုင်ပြီ", summary: "မြန်မာနိုင်ငံတွင် 5G ကွန်ရက်ကို စတင်အသုံးပြုနိုင်ပြီဖြစ်ပါသည်။", category: "5G", source: "Myanmar Tech News", reliability: "high" },
+            { id: 2, title: "🤖 AI နည်းပညာ ဖွံ့ဖြိုးလာ", summary: "Artificial Intelligence နည်းပညာဖြင့် မြန်မာစာ ဘာသာပြန်စနစ်များ တိုးတက်လာ", category: "AI", source: "Myanmar Tech News", reliability: "high" }
         ];
         
-        // ============ Load News from Supabase ============
-        // index.html ထဲမှာ ဒီ function ရှိရပါမယ်
-async function loadNews() {
-    try {
-        const { data, error } = await supabase
-            .from('news')
-            .select('*')
-            .order('created_at', { ascending: false });
-        
-        if (error) throw error;
-        
-        if (data && data.length > 0) {
-            renderNews(data);
-            renderLatestNews(data.slice(0, 3));
-        } else {
-            renderNews(initialNewsData);
-            renderLatestNews(initialNewsData.slice(0, 3));
+        // ============ LOAD NEWS FROM SUPABASE ============
+        async function loadNews() {
+            try {
+                console.log('Loading news from Supabase...');
+                
+                const { data, error } = await supabase
+                    .from('news')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    console.error('Supabase error:', error);
+                    renderNews(initialNewsData);
+                    renderLatestNews(initialNewsData);
+                    return;
+                }
+                
+                console.log('Loaded news count:', data?.length || 0);
+                
+                if (data && data.length > 0) {
+                    renderNews(data);
+                    renderLatestNews(data.slice(0, 3));
+                } else {
+                    renderNews(initialNewsData);
+                    renderLatestNews(initialNewsData);
+                }
+                
+            } catch (err) {
+                console.error('Load error:', err);
+                renderNews(initialNewsData);
+                renderLatestNews(initialNewsData);
+            }
         }
-    } catch (err) {
-        console.error('Error loading news:', err);
-        renderNews(initialNewsData);
-        renderLatestNews(initialNewsData.slice(0, 3));
-    }
-}
-
-// Page load လုပ်တဲ့အခါ ခေါ်ပါ
-loadNews();
         
-        // ============ Render Search Results ============
+        // ============ RENDER SEARCH RESULTS ============
         function renderNews(newsArray) {
             const container = document.getElementById('searchResults');
             if (!container) return;
             
-            if (newsArray.length === 0) {
+            if (!newsArray || newsArray.length === 0) {
                 container.innerHTML = '<div style="text-align:center; padding:2rem;">📭 သတင်းမရှိသေးပါ</div>';
                 return;
             }
             
             container.innerHTML = newsArray.map(news => `
-                <div class="result-card" data-id="${news.id}" data-title="${news.title}">
-                    <h3><a href="#" onclick="viewNewsDetail(${news.id}); return false;">${escapeHtml(news.title)}</a></h3>
+                <div class="result-card" data-id="${news.id}">
+                    <h3><a href="#" onclick="viewNews(${news.id}); return false;">${escapeHtml(news.title)}</a></h3>
                     <p class="snippet">${escapeHtml(news.summary)}</p>
                     <div class="result-footer">
-                        <span class="reliability-badge ${news.reliability || 'medium'}">
-                            ${getReliabilityText(news.reliability)}
-                        </span>
+                        <span class="reliability-badge ${news.reliability || 'medium'}">${getReliabilityText(news.reliability)}</span>
                         <button class="save-btn" onclick="saveToFavorites(${news.id}, '${escapeHtml(news.title)}')">⭐ မှတ်သားရန်</button>
                     </div>
                 </div>
             `).join('');
         }
         
-        // ============ Render Latest News ============
+        // ============ RENDER LATEST NEWS ============
         function renderLatestNews(newsArray) {
             const container = document.getElementById('latestNews');
             if (!container) return;
             
-            if (newsArray.length === 0) {
+            if (!newsArray || newsArray.length === 0) {
                 container.innerHTML = '<div style="text-align:center; padding:2rem;">📭 သတင်းမရှိသေးပါ</div>';
                 return;
             }
@@ -611,15 +205,15 @@ loadNews();
             container.innerHTML = newsArray.map(news => `
                 <div class="news-card">
                     <div class="news-badge">📡 ${escapeHtml(news.source || 'Myanmar Tech News')}</div>
-                    <h3><a href="#" onclick="viewNewsDetail(${news.id}); return false;">${escapeHtml(news.title)}</a></h3>
+                    <h3><a href="#" onclick="viewNews(${news.id}); return false;">${escapeHtml(news.title)}</a></h3>
                     <p class="news-summary">${escapeHtml(news.summary)}</p>
-                    <a href="#" onclick="viewNewsDetail(${news.id}); return false;" class="read-more">ဆက်ဖတ်ရန် →</a>
+                    <a href="#" onclick="viewNews(${news.id}); return false;" class="read-more">ဆက်ဖတ်ရန် →</a>
                 </div>
             `).join('');
         }
         
-        // ============ View News Detail ============
-        window.viewNewsDetail = async function(id) {
+        // ============ VIEW NEWS DETAIL ============
+        window.viewNews = async function(id) {
             try {
                 const { data, error } = await supabase
                     .from('news')
@@ -639,10 +233,9 @@ loadNews();
             }
         };
         
-        // ============ Save to Favorites ============
+        // ============ SAVE TO FAVORITES ============
         window.saveToFavorites = function(id, title) {
             let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-            
             if (!favorites.some(f => f.id === id)) {
                 favorites.push({ id, title, time: new Date().toISOString() });
                 localStorage.setItem('favorites', JSON.stringify(favorites));
@@ -652,7 +245,7 @@ loadNews();
             }
         };
         
-        // ============ Helper Functions ============
+        // ============ HELPER FUNCTIONS ============
         function getReliabilityText(level) {
             if (level === 'high') return '✅ အလွန်ယုံကြည်ရ';
             if (level === 'medium') return '📊 ယုံကြည်ရ';
@@ -666,17 +259,15 @@ loadNews();
             return div.innerHTML;
         }
         
-        // ============ Search Function ============
+        // ============ SEARCH FUNCTION ============
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
             searchInput.addEventListener('input', async function(e) {
                 const term = e.target.value.toLowerCase().trim();
-                
                 if (term === '') {
                     loadNews();
                     return;
                 }
-                
                 try {
                     const { data, error } = await supabase
                         .from('news')
@@ -694,67 +285,47 @@ loadNews();
             });
         }
         
-        // ============ Mobile Menu ============
+        // ============ MOBILE MENU ============
         const hamburger = document.querySelector('.hamburger');
         const navMenu = document.querySelector('.nav-menu');
-        
         if (hamburger) {
-            hamburger.addEventListener('click', () => {
-                navMenu.classList.toggle('active');
+            hamburger.addEventListener('click', () => navMenu.classList.toggle('active'));
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                link.addEventListener('click', () => navMenu.classList.remove('active'));
             });
         }
         
-        document.querySelectorAll('.nav-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-            });
-        });
-        
-        // ============ Back to Top ============
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
+        // ============ BACK TO TOP ============
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
         const backBtn = document.querySelector('.back-to-top');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                backBtn.classList.add('show');
-            } else {
-                backBtn.classList.remove('show');
-            }
+            if (window.scrollY > 300) backBtn.classList.add('show');
+            else backBtn.classList.remove('show');
         });
         
-        // ============ Current Time ============
+        // ============ CURRENT TIME ============
         function updateTime() {
             const el = document.getElementById('currentTime');
             if (el) {
                 const now = new Date();
-                el.textContent = now.toLocaleDateString('my-MM', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
+                el.textContent = now.toLocaleDateString('my-MM', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
             }
         }
         updateTime();
         setInterval(updateTime, 1000);
         
-        // ============ Smooth Scroll ============
+        // ============ SMOOTH SCROLL ============
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
             });
         });
         
-        // ============ Initialize ============
+        // ============ INITIALIZE ============
         loadNews();
-        console.log('✅ Myanmar Tech News - Ready!');
+        console.log('✅ Myanmar Tech News Frontend Ready!');
     </script>
 </body>
 </html>
