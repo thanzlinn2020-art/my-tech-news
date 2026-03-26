@@ -6,138 +6,37 @@
     <title>သတင်းအသေးစိတ် - မြန်မာနည်းပညာသတင်း</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Noto Sans Myanmar', sans-serif;
-            background: #f1f5f9;
-        }
-        .container {
-            width: 90%;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .navbar {
-            background: #0f172a;
-            color: white;
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-        .navbar .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .nav-brand h1 {
-            font-size: 1.2rem;
-        }
-        .back-link {
-            color: #3b82f6;
-            text-decoration: none;
-            background: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-        }
-        .news-detail {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            margin-top: 80px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        .news-image {
-            width: 100%;
-            border-radius: 12px;
-            margin: 20px 0;
-        }
-        .news-title {
-            font-size: 1.8rem;
-            color: #0f172a;
-            margin-bottom: 15px;
-        }
-        .news-meta {
-            display: flex;
-            gap: 15px;
-            color: #64748b;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e2e8f0;
-            flex-wrap: wrap;
-        }
-        .news-content {
-            line-height: 1.8;
-            color: #334155;
-            font-size: 1.05rem;
-        }
-        .news-content p {
-            margin-bottom: 1rem;
-        }
-        .reliability-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        .reliability-badge.high {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-        .reliability-badge.medium {
-            background: #fef3c7;
-            color: #b45309;
-        }
-        .reliability-badge.low {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-        .loading {
-            text-align: center;
-            padding: 50px;
-            color: #3b82f6;
-        }
-        .error-message {
-            text-align: center;
-            padding: 50px;
-            color: #ef4444;
-        }
-        .footer {
-            background: #0f172a;
-            color: white;
-            padding: 2rem 0;
-            margin-top: 2rem;
-            text-align: center;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans Myanmar', sans-serif; background: #f1f5f9; }
+        .container { width: 90%; max-width: 900px; margin: 0 auto; padding: 20px; }
+        .navbar { background: #0f172a; color: white; padding: 1rem 0; position: fixed; width: 100%; top: 0; z-index: 1000; }
+        .navbar .container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand h1 { font-size: 1.2rem; }
+        .back-link { color: #3b82f6; text-decoration: none; background: white; padding: 8px 16px; border-radius: 8px; font-weight: 500; }
+        .news-detail { background: white; border-radius: 24px; padding: 35px; margin-top: 90px; margin-bottom: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .news-image { width: 100%; max-height: 400px; object-fit: cover; border-radius: 16px; margin: 20px 0; }
+        .news-title { font-size: 2rem; color: #0f172a; margin-bottom: 15px; line-height: 1.3; }
+        .news-meta { display: flex; flex-wrap: wrap; gap: 20px; color: #64748b; font-size: 0.9rem; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #e2e8f0; }
+        .news-content { line-height: 1.8; color: #334155; font-size: 1.05rem; }
+        .news-content p { margin-bottom: 1.2rem; }
+        .reliability-badge { display: inline-block; padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; }
+        .reliability-badge.high { background: #dbeafe; color: #1e40af; }
+        .reliability-badge.medium { background: #fef3c7; color: #b45309; }
+        .reliability-badge.low { background: #fee2e2; color: #b91c1c; }
+        .loading { text-align: center; padding: 60px; color: #3b82f6; font-size: 1.1rem; }
+        .error-message { text-align: center; padding: 60px; color: #ef4444; }
+        .footer { background: #0f172a; color: white; padding: 2rem 0; margin-top: 2rem; text-align: center; }
         @media (max-width: 768px) {
-            .news-title {
-                font-size: 1.4rem;
-            }
-            .news-detail {
-                padding: 20px;
-                margin-top: 70px;
-            }
-            .news-meta {
-                gap: 10px;
-                font-size: 0.8rem;
-            }
+            .news-title { font-size: 1.5rem; }
+            .news-detail { padding: 20px; margin-top: 80px; }
+            .news-meta { gap: 12px; }
         }
     </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
-            <div class="nav-brand">
-                <h1>🇲🇲 မြန်မာနည်းပညာသတင်း</h1>
-            </div>
+            <div class="nav-brand"><h1>🇲🇲 မြန်မာနည်းပညာသတင်း</h1></div>
             <a href="index.html" class="back-link">← နောက်သို့</a>
         </div>
     </nav>
@@ -156,131 +55,84 @@
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Wrap everything in an IIFE to avoid variable conflicts
-        (function() {
-            // Supabase configuration
-            const SUPABASE_URL = 'https://tlmzcasltbihfbnupguq.supabase.co';
-            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';
-            
-            // Create client
-            const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            
-            // Get news ID from URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const newsId = urlParams.get('id');
-            
-            // DOM elements
-            const container = document.getElementById('newsDetail');
-            
-            // Format date
-            function formatDate(dateString) {
-                if (!dateString) return 'ရက်စွဲမရှိ';
-                try {
-                    const date = new Date(dateString);
-                    return date.toLocaleDateString('my-MM', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    });
-                } catch(e) {
-                    return 'ရက်စွဲမရှိ';
-                }
+        // ============ SUPABASE CONFIGURATION ============
+        const SUPABASE_URL = 'https://tlmzcasltbihfbnupguq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';  // ← ကိုယ့် anon key ထည့်ပါ
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Get news ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const newsId = urlParams.get('id');
+        
+        async function loadNewsDetail() {
+            if (!newsId) {
+                document.getElementById('newsDetail').innerHTML = '<div class="error-message">❌ သတင်း ID မရှိပါ</div>';
+                return;
             }
             
-            // Format content with paragraphs
-            function formatContent(content) {
-                if (!content) return '<p>အကြောင်းအရာ မရှိသေးပါ။</p>';
-                return content.split('\n')
-                    .filter(para => para.trim())
-                    .map(para => `<p>${escapeHtml(para)}</p>`)
-                    .join('');
-            }
-            
-            // Get reliability text
-            function getReliabilityText(level) {
-                if (level === 'high') return '✅ အလွန်ယုံကြည်ရ';
-                if (level === 'medium') return '📊 ယုံကြည်ရ';
-                return '⚠️ စစ်ဆေးရန်';
-            }
-            
-            // Get reliability class
-            function getReliabilityClass(level) {
-                if (level === 'high') return 'high';
-                if (level === 'medium') return 'medium';
-                return 'low';
-            }
-            
-            // Escape HTML
-            function escapeHtml(text) {
-                if (!text) return '';
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
-            
-            // Load and render news detail
-            async function loadNewsDetail() {
-                if (!newsId) {
-                    container.innerHTML = '<div class="error-message">❌ သတင်း ID မရှိပါ</div>';
-                    return;
+            try {
+                const { data, error } = await supabase
+                    .from('news')
+                    .select('*')
+                    .eq('id', parseInt(newsId))
+                    .single();
+                
+                if (error || !data) {
+                    throw new Error('News not found');
                 }
                 
-                try {
-                    console.log('Loading news ID:', newsId);
-                    
-                    const { data, error } = await sbClient
-                        .from('news')
-                        .select('*')
-                        .eq('id', parseInt(newsId))
-                        .single();
-                    
-                    if (error) {
-                        console.error('Supabase error:', error);
-                        throw error;
-                    }
-                    
-                    if (!data) {
-                        container.innerHTML = '<div class="error-message">❌ သတင်းမတွေ့ပါ</div>';
-                        return;
-                    }
-                    
-                    // Render the news
-                    const reliabilityClass = getReliabilityClass(data.reliability);
-                    const reliabilityText = getReliabilityText(data.reliability);
-                    
-                    const html = `
-                        <h1 class="news-title">${escapeHtml(data.title)}</h1>
-                        <div class="news-meta">
-                            <span>📅 ${formatDate(data.created_at)}</span>
-                            <span>🔗 ${escapeHtml(data.source || 'Myanmar Tech News')}</span>
-                            <span class="reliability-badge ${reliabilityClass}">${reliabilityText}</span>
-                        </div>
-                        ${data.image_url ? `<img src="${escapeHtml(data.image_url)}" class="news-image" alt="${escapeHtml(data.title)}" onerror="this.style.display='none'">` : ''}
-                        <div class="news-content">
-                            ${formatContent(data.content || data.summary)}
-                        </div>
-                        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
-                            <a href="index.html" style="color: #3b82f6; text-decoration: none;">← သတင်းများစာရင်းသို့ ပြန်သွားရန်</a>
-                        </div>
-                    `;
-                    
-                    container.innerHTML = html;
-                    
-                } catch (err) {
-                    console.error('Load error:', err);
-                    container.innerHTML = `
-                        <div class="error-message">
-                            ❌ သတင်းအသေးစိတ် ရယူ၍မရပါ<br><br>
-                            <a href="index.html" style="color:#3b82f6;">← ပင်မစာမျက်နှာသို့ ပြန်သွားရန်</a>
-                        </div>
-                    `;
-                }
+                renderNewsDetail(data);
+                
+            } catch (err) {
+                console.error('Error:', err);
+                document.getElementById('newsDetail').innerHTML = '<div class="error-message">❌ သတင်းမတွေ့ပါ။ သတင်း ID မှန်ကန်မှု စစ်ဆေးပါ။</div>';
             }
+        }
+        
+        function renderNewsDetail(news) {
+            const reliabilityClass = news.reliability || 'medium';
+            const reliabilityText = reliabilityClass === 'high' ? '✅ အလွန်ယုံကြည်ရ' : (reliabilityClass === 'medium' ? '📊 ယုံကြည်ရ' : '⚠️ စစ်ဆေးရန်');
             
-            // Start loading
-            loadNewsDetail();
-            console.log('✅ News Detail Page Loaded');
-        })();
+            const html = `
+                <h1 class="news-title">${escapeHtml(news.title)}</h1>
+                <div class="news-meta">
+                    <span>📅 ${formatDate(news.created_at)}</span>
+                    <span>🔗 ${escapeHtml(news.source || 'Myanmar Tech News')}</span>
+                    <span class="reliability-badge ${reliabilityClass}">${reliabilityText}</span>
+                </div>
+                ${news.image_url ? `<img src="${escapeHtml(news.image_url)}" class="news-image" alt="${escapeHtml(news.title)}" onerror="this.style.display='none'">` : ''}
+                <div class="news-content">
+                    ${formatContent(news.content || news.summary)}
+                </div>
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                    <a href="index.html" style="color: #3b82f6; text-decoration: none;">← သတင်းများစာရင်းသို့</a>
+                </div>
+            `;
+            document.getElementById('newsDetail').innerHTML = html;
+        }
+        
+        function formatContent(content) {
+            if (!content) return '<p>အကြောင်းအရာ မရှိသေးပါ။</p>';
+            // Convert line breaks to paragraphs
+            const paragraphs = content.split('\n').filter(p => p.trim());
+            return paragraphs.map(para => `<p>${escapeHtml(para)}</p>`).join('');
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return 'ရက်စွဲမရှိ';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('my-MM', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        loadNewsDetail();
     </script>
 </body>
 </html>
