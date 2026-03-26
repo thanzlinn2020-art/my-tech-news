@@ -334,6 +334,66 @@ async function fetchNews() {
                 showMessage('❌ အမှားရှိနေပါသည်: ' + err.message, 'error');
             }
         }
+
+        // ============ SUPABASE AUTH LOGIN ============
+let currentUser = null;
+
+async function checkAuth() {
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    
+    if (error || !session) {
+        // Show login form
+        showLoginForm();
+        return false;
+    }
+    
+    currentUser = session.user;
+    
+    // Check if user is admin
+    if (currentUser.email !== 'admin@mytechnews.com') {
+        showMessage('သင်သည် Admin မဟုတ်ပါ။ ဝင်ခွင့်မရှိပါ။', 'error');
+        document.body.innerHTML = '<div style="text-align:center; padding:50px;"><h1>⛔ ဝင်ခွင့်မရှိပါ</h1><p>Admin အကောင့်ဖြင့်သာ ဝင်ရောက်နိုင်ပါသည်။</p><a href="index.html">🏠 ပင်မစာမျက်နှာသို့</a></div>';
+        return false;
+    }
+    
+    return true;
+}
+
+function showLoginForm() {
+    const html = `
+        <div style="max-width:400px; margin:100px auto; background:white; padding:30px; border-radius:16px;">
+            <h2>🔐 Admin Login</h2>
+            <input type="email" id="loginEmail" placeholder="Email" style="width:100%; padding:12px; margin:10px 0; border:1px solid #ccc; border-radius:8px;">
+            <input type="password" id="loginPassword" placeholder="Password" style="width:100%; padding:12px; margin:10px 0; border:1px solid #ccc; border-radius:8px;">
+            <button onclick="login()" style="width:100%; padding:12px; background:#3b82f6; color:white; border:none; border-radius:8px;">Login</button>
+            <p style="margin-top:15px; font-size:12px; color:#64748b;">Admin အကောင့်ဖြင့်သာ ဝင်နိုင်ပါသည်။</p>
+        </div>
+    `;
+    document.body.innerHTML = html;
+}
+
+window.login = async function() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
+    
+    if (error) {
+        alert('Login failed: ' + error.message);
+        return;
+    }
+    
+    if (data.user.email !== 'admin@mytechnews.com') {
+        alert('သင်သည် Admin မဟုတ်ပါ။');
+        await supabaseClient.auth.signOut();
+        return;
+    }
+    
+    location.reload();
+};
         
         // ============ LOAD NEWS LIST ============
         async function loadNewsList() {
