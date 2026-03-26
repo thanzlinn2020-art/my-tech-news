@@ -547,30 +547,32 @@
         ];
         
         // ============ Load News from Supabase ============
-        async function loadNews() {
-            try {
-                const { data, error } = await supabase
-                    .from('news')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-                
-                if (error) {
-                    console.error('Supabase error:', error);
-                    renderNews(initialNewsData);
-                    renderLatestNews(initialNewsData.slice(0, 3));
-                } else if (data && data.length > 0) {
-                    renderNews(data);
-                    renderLatestNews(data.slice(0, 3));
-                } else {
-                    renderNews(initialNewsData);
-                    renderLatestNews(initialNewsData.slice(0, 3));
-                }
-            } catch (err) {
-                console.error('Error:', err);
-                renderNews(initialNewsData);
-                renderLatestNews(initialNewsData.slice(0, 3));
-            }
+        // index.html ထဲမှာ ဒီ function ရှိရပါမယ်
+async function loadNews() {
+    try {
+        const { data, error } = await supabase
+            .from('news')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+            renderNews(data);
+            renderLatestNews(data.slice(0, 3));
+        } else {
+            renderNews(initialNewsData);
+            renderLatestNews(initialNewsData.slice(0, 3));
         }
+    } catch (err) {
+        console.error('Error loading news:', err);
+        renderNews(initialNewsData);
+        renderLatestNews(initialNewsData.slice(0, 3));
+    }
+}
+
+// Page load လုပ်တဲ့အခါ ခေါ်ပါ
+loadNews();
         
         // ============ Render Search Results ============
         function renderNews(newsArray) {
