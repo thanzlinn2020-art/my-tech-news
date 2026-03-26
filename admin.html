@@ -26,7 +26,7 @@
         th{background:#f8fafc}
         .hidden{display:none}
         .loading{text-align:center;padding:20px;color:#3b82f6}
-        .message{padding:10px15px;border-radius:8px;margin-bottom:15px;position:fixed;top:20px;right:20px;z-index:1000;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+        .message{padding:10px15px;border-radius:8px;position:fixed;top:20px;right:20px;z-index:1000;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
         .message.success{background:#d1fae5;color:#065f46;border-left:4px solid #10b981}
         .message.error{background:#fee2e2;color:#991b1b;border-left:4px solid #ef4444}
         .row{display:grid;grid-template-columns:1fr 1fr;gap:15px}
@@ -41,9 +41,9 @@
     </div>
     
     <div class="tabs">
-        <button class="tab active" onclick="showTab('add')">✍️ လက်ဖြင့်ထည့်ရန်</button>
-        <button class="tab" onclick="showTab('auto')">🤖 Auto Import</button>
-        <button class="tab" onclick="showTab('list')">📋 သတင်းစာရင်း</button>
+        <button class="tab active" id="tabAddBtn">✍️ လက်ဖြင့်ထည့်ရန်</button>
+        <button class="tab" id="tabAutoBtn">🤖 Auto Import</button>
+        <button class="tab" id="tabListBtn">📋 သတင်းစာရင်း</button>
     </div>
     
     <!-- Add News Tab -->
@@ -65,8 +65,8 @@
             </select>
         </div>
         <div style="margin-top:20px">
-            <button class="btn btn-primary" onclick="saveNews()">💾 သိမ်းမည်</button>
-            <button class="btn btn-secondary" onclick="clearForm()">🗑️ ပယ်ဖျက်မည်</button>
+            <button class="btn btn-primary" id="saveBtn">💾 သိမ်းမည်</button>
+            <button class="btn btn-secondary" id="clearBtn">🗑️ ပယ်ဖျက်မည်</button>
         </div>
     </div>
     
@@ -75,7 +75,7 @@
         <h2>🤖 Auto Import - သတင်းလင့်ခ် တစ်ခုတည်းနဲ့ အလိုလိုပါလာ</h2>
         <p style="color:#64748b; margin-bottom:15px">📌 သတင်းလင့်ခ် (URL) ကိုထည့်ပါ။ ခေါင်းစဉ်၊ အကျဉ်းချုပ်၊ ရုပ်ပုံတွေ အလိုလိုပါလာပါမယ်။</p>
         <input type="url" id="newsUrl" placeholder="https://www.bbc.com/burmese/...">
-        <button class="btn btn-primary" onclick="fetchNews()">🔍 သတင်းယူမည်</button>
+        <button class="btn btn-primary" id="fetchBtn">🔍 သတင်းယူမည်</button>
         <div id="fetchLoading" class="loading hidden">⏳ သတင်းအချက်အလက်များ ယူနေပါသည်...</div>
         <div id="previewDiv" class="hidden" style="margin-top:20px;padding:15px;background:#f8fafc;border-radius:12px"></div>
     </div>
@@ -109,23 +109,32 @@ function showMessage(msg, type) {
 }
 
 // ============ TAB SWITCH ============
-function showTab(tab) {
-    document.getElementById('addPanel').classList.add('hidden');
+function showAddTab() {
+    document.getElementById('addPanel').classList.remove('hidden');
     document.getElementById('autoPanel').classList.add('hidden');
     document.getElementById('listPanel').classList.add('hidden');
-    document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
-    
-    if (tab === 'add') {
-        document.getElementById('addPanel').classList.remove('hidden');
-        document.querySelectorAll('.tab')[0].classList.add('active');
-    } else if (tab === 'auto') {
-        document.getElementById('autoPanel').classList.remove('hidden');
-        document.querySelectorAll('.tab')[1].classList.add('active');
-    } else if (tab === 'list') {
-        document.getElementById('listPanel').classList.remove('hidden');
-        document.querySelectorAll('.tab')[2].classList.add('active');
-        loadNewsList();
-    }
+    document.getElementById('tabAddBtn').classList.add('active');
+    document.getElementById('tabAutoBtn').classList.remove('active');
+    document.getElementById('tabListBtn').classList.remove('active');
+}
+
+function showAutoTab() {
+    document.getElementById('addPanel').classList.add('hidden');
+    document.getElementById('autoPanel').classList.remove('hidden');
+    document.getElementById('listPanel').classList.add('hidden');
+    document.getElementById('tabAddBtn').classList.remove('active');
+    document.getElementById('tabAutoBtn').classList.add('active');
+    document.getElementById('tabListBtn').classList.remove('active');
+}
+
+function showListTab() {
+    document.getElementById('addPanel').classList.add('hidden');
+    document.getElementById('autoPanel').classList.add('hidden');
+    document.getElementById('listPanel').classList.remove('hidden');
+    document.getElementById('tabAddBtn').classList.remove('active');
+    document.getElementById('tabAutoBtn').classList.remove('active');
+    document.getElementById('tabListBtn').classList.add('active');
+    loadNewsList();
 }
 
 // ============ SAVE NEWS ============
@@ -225,10 +234,15 @@ async function fetchNews() {
             <p><strong>🔗 ရင်းမြစ်:</strong> ${fetchedData.source}</p>
             ${fetchedData.image_url ? `<img src="${fetchedData.image_url}" style="max-width:100%; max-height:150px; border-radius:8px; margin-top:10px;">` : '<p>🖼️ ပုံမရှိပါ</p>'}
             <div style="margin-top:15px">
-                <button class="btn btn-success" onclick="importNews()">📥 Supabase ထဲသိမ်းမည်</button>
-                <button class="btn btn-secondary" onclick="clearPreview()">🗑️ ပယ်ဖျက်မည်</button>
+                <button class="btn btn-success" id="importBtn">📥 Supabase ထဲသိမ်းမည်</button>
+                <button class="btn btn-secondary" id="clearPreviewBtn">🗑️ ပယ်ဖျက်မည်</button>
             </div>
         `;
+        
+        // Add event listeners for dynamically created buttons
+        document.getElementById('importBtn').onclick = importNews;
+        document.getElementById('clearPreviewBtn').onclick = clearPreview;
+        
         document.getElementById('previewDiv').classList.remove('hidden');
         showMessage('✅ သတင်းအချက်အလက် ယူပြီးပါပြီ', 'success');
         
@@ -323,6 +337,17 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+// ============ SETUP EVENT LISTENERS ============
+document.getElementById('tabAddBtn').onclick = showAddTab;
+document.getElementById('tabAutoBtn').onclick = showAutoTab;
+document.getElementById('tabListBtn').onclick = showListTab;
+document.getElementById('saveBtn').onclick = saveNews;
+document.getElementById('clearBtn').onclick = clearForm;
+document.getElementById('fetchBtn').onclick = fetchNews;
+
+// ============ MAKE FUNCTIONS GLOBAL FOR HTML BUTTONS ============
+window.deleteNews = deleteNews;
 
 // ============ INITIALIZE ============
 loadNewsList();
