@@ -19,19 +19,30 @@ async function fetchMetadata() {
     fetchBtn.disabled = true;
 
     try {
+        // နည်းလမ်း (၁) - LinkPreview API ကို သုံးကြည့်မယ်
         const response = await fetch(`https://api.linkpreview.net/?key=56d367468686e065759714856037a1a4&q=${encodeURIComponent(url)}`);
-        const data = await response.json();
-
-        if (data.title) {
+        
+        if (!response.ok) {
+            // နည်းလမ်း (၂) - ပထမနည်းလမ်း အလုပ်မလုပ်ရင် OpenGraph Proxy တစ်ခုနဲ့ စမ်းမယ်
+            const ogRes = await fetch(`https://opengraph.io/api/1.1/site/${encodeURIComponent(url)}?app_id=56d367468686e065759714856037a1a4`);
+            const ogData = await ogRes.json();
+            
+            if (ogData.hybridGraph && ogData.hybridGraph.title) {
+                document.getElementById('title').value = ogData.hybridGraph.title;
+                document.getElementById('summary').value = ogData.hybridGraph.description || "";
+                alert("✅ အချက်အလက်များ ရရှိပါပြီ (Backup Server)");
+            } else {
+                throw new Error("Failed to fetch");
+            }
+        } else {
+            const data = await response.json();
             document.getElementById('title').value = data.title;
             document.getElementById('summary').value = data.description || "";
-            alert("အချက်အလက်များ ရရှိပါပြီ!");
-        } else {
-            alert("အချက်အလက် ဆွဲယူ၍မရပါ။ ကိုယ်တိုင်ဖြည့်စွက်ပါ။");
+            alert("✅ အချက်အလက်များ ရရှိပါပြီ");
         }
     } catch (error) {
         console.error("Error:", error);
-        alert("API Error ဖြစ်နေပါသည်။ ကိုယ်တိုင်ဖြည့်စွက်ပေးပါ။");
+        alert("⚠️ Link မှ အချက်အလက် ဆွဲယူမရပါ။ ဝက်ဘ်ဆိုက်မှ ပိတ်ထားခြင်း ဖြစ်နိုင်သဖြင့် ကိုယ်တိုင် ဖြည့်စွက်ပေးပါ။");
     } finally {
         fetchBtn.innerText = "Fetch";
         fetchBtn.disabled = false;
