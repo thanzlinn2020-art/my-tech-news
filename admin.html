@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - မြန်မာနည်းပညာသတင်း (Auto Import)</title>
+    <title>Admin Panel - မြန်မာနည်းပညာသတင်း</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -150,17 +150,9 @@
             color: white;
         }
         
-        .btn-success:hover {
-            background: #059669;
-        }
-        
         .btn-danger {
             background: #ef4444;
             color: white;
-        }
-        
-        .btn-danger:hover {
-            background: #dc2626;
         }
         
         .btn-warning {
@@ -201,23 +193,6 @@
             background: #f8fafc;
             font-weight: 600;
             color: #0f172a;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .action-buttons button {
-            padding: 5px 10px;
-            font-size: 12px;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: #3b82f6;
         }
         
         .status-badge {
@@ -275,30 +250,15 @@
             border: 1px solid #fecaca;
         }
         
-        .message.info {
-            background: #dbeafe;
-            color: #1e40af;
-            border: 1px solid #bfdbfe;
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #3b82f6;
         }
         
         @media (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
-            }
-            
-            th, td {
-                font-size: 12px;
-                padding: 8px;
-            }
-            
-            .admin-header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .tab-btn {
-                padding: 8px 16px;
-                font-size: 14px;
             }
         }
     </style>
@@ -306,70 +266,68 @@
 <body>
     <div class="admin-container">
         <div class="admin-header">
-            <h1>👑 Admin Panel - သတင်းစီမံခန့်ခွဲမှု (Auto Import)</h1>
+            <h1>👑 Admin Panel - သတင်းစီမံခန့်ခွဲမှု</h1>
             <a href="index.html" class="back-link">🏠 Frontend သို့ ပြန်သွားရန်</a>
         </div>
         
-        <!-- Message Display -->
         <div id="messageBox" class="message"></div>
         
-        <!-- Tabs -->
         <div class="tabs">
-            <button class="tab-btn active" data-tab="manual">✍️ လက်ဖြင့်ထည့်ရန်</button>
-            <button class="tab-btn" data-tab="auto">🤖 Auto Import (Link ထည့်ရုံ)</button>
-            <button class="tab-btn" data-tab="list">📋 သတင်းစာရင်း</button>
+            <button class="tab-btn active" onclick="switchTab('manual')">✍️ လက်ဖြင့်ထည့်ရန်</button>
+            <button class="tab-btn" onclick="switchTab('auto')">🤖 Auto Import</button>
+            <button class="tab-btn" onclick="switchTab('list')">📋 သတင်းစာရင်း</button>
         </div>
         
         <!-- Tab 1: Manual Entry -->
         <div id="manualTab" class="tab-content active">
             <div class="news-form">
-                <h2 id="formTitle">➕ သတင်းအသစ်ထည့်ရန် (လက်ဖြင့်)</h2>
+                <h2 id="formTitle">➕ သတင်းအသစ်ထည့်ရန်</h2>
                 <input type="hidden" id="newsId">
                 
                 <div class="form-group">
                     <label>📰 ခေါင်းစဉ် *</label>
-                    <input type="text" id="title" placeholder="သတင်းခေါင်းစဉ် ထည့်ပါ" required>
+                    <input type="text" id="title" placeholder="သတင်းခေါင်းစဉ်">
                 </div>
                 
                 <div class="form-group">
                     <label>📝 အကျဉ်းချုပ် *</label>
-                    <textarea id="summary" rows="2" placeholder="သတင်းအကျဉ်းချုပ် ထည့်ပါ"></textarea>
+                    <textarea id="summary" rows="2" placeholder="သတင်းအကျဉ်းချုပ်"></textarea>
                 </div>
                 
                 <div class="form-group">
                     <label>📄 အပြည့်အစုံ</label>
-                    <textarea id="content" rows="5" placeholder="သတင်းအပြည့်အစုံ ထည့်ပါ"></textarea>
+                    <textarea id="content" rows="4" placeholder="သတင်းအပြည့်အစုံ"></textarea>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label>🏷️ အမျိုးအစား</label>
-                        <input type="text" id="category" placeholder="AI, 5G, Mobile, Internet">
+                        <input type="text" id="category" placeholder="AI, 5G, Mobile">
                     </div>
                     <div class="form-group">
                         <label>🔗 ရင်းမြစ်</label>
-                        <input type="text" id="source" placeholder="BBC Burmese, VOA, etc.">
+                        <input type="text" id="source" placeholder="BBC, VOA">
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label>🖼️ ပုံလင့်ခ်</label>
-                        <input type="text" id="image_url" placeholder="https://example.com/image.jpg">
+                        <input type="text" id="image_url" placeholder="https://...">
                     </div>
                     <div class="form-group">
                         <label>⭐ ယုံကြည်ရမှု</label>
                         <select id="reliability">
-                            <option value="high">အလွန်ယုံကြည်ရ (High)</option>
-                            <option value="medium">ယုံကြည်ရ (Medium)</option>
-                            <option value="low">စစ်ဆေးရန် (Low)</option>
+                            <option value="high">အလွန်ယုံကြည်ရ</option>
+                            <option value="medium" selected>ယုံကြည်ရ</option>
+                            <option value="low">စစ်ဆေးရန်</option>
                         </select>
                     </div>
                 </div>
                 
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button class="btn btn-primary" id="saveManualBtn">💾 သိမ်းမည်</button>
-                    <button class="btn btn-secondary" id="clearFormBtn">🗑️ ပယ်ဖျက်မည်</button>
+                    <button class="btn btn-primary" onclick="saveNews()">💾 သိမ်းမည်</button>
+                    <button class="btn btn-secondary" onclick="clearForm()">🗑️ ပယ်ဖျက်မည်</button>
                 </div>
             </div>
         </div>
@@ -377,32 +335,23 @@
         <!-- Tab 2: Auto Import -->
         <div id="autoTab" class="tab-content">
             <div class="auto-import-form">
-                <h2>🤖 Auto Import - သတင်းလင့်ခ် တစ်ခုတည်းနဲ့ အလိုလိုပါလာ</h2>
-                <p style="color: #64748b; margin-bottom: 20px;">
-                    📌 သတင်းလင့်ခ် (URL) ကိုထည့်ပါ။ ခေါင်းစဉ်၊ အကျဉ်းချုပ်၊ ရုပ်ပုံတွေ အလိုလိုပါလာပါမယ်။
-                </p>
+                <h2>🤖 Auto Import - Link ထည့်ရုံသာ</h2>
+                <p style="color: #64748b; margin-bottom: 20px;">သတင်းလင့်ခ် (URL) ထည့်ပါ။ ခေါင်းစဉ်၊ အကျဉ်းချုပ် အလိုလိုပါလာမယ်။</p>
                 
                 <div class="form-group">
                     <label>🔗 သတင်းလင့်ခ် (URL)</label>
-                    <input type="url" id="newsUrl" placeholder="https://www.bbc.com/burmese/..." style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px;">
+                    <input type="url" id="newsUrl" placeholder="https://www.bbc.com/burmese/..." style="width:100%; padding:12px;">
                 </div>
                 
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="btn btn-primary" id="fetchNewsBtn">🔍 သတင်းအချက်အလက်ယူမည်</button>
-                </div>
+                <button class="btn btn-primary" onclick="fetchNews()">🔍 သတင်းယူမည်</button>
                 
-                <!-- Preview Area -->
-                <div id="previewArea" style="display: none; margin-top: 25px;">
-                    <h3>📋 ယူထားတဲ့ အချက်အလက်များ</h3>
+                <div id="loadingMsg" style="display:none; margin-top:15px;" class="loading">⏳ ယူနေပါသည်...</div>
+                
+                <div id="previewArea" style="display:none; margin-top:20px;">
+                    <h3>📋 ယူထားတဲ့ အချက်အလက်</h3>
                     <div id="previewContent" class="preview-card"></div>
-                    <div style="display: flex; gap: 10px; margin-top: 15px;">
-                        <button class="btn btn-success" id="importToDbBtn">📥 Supabase ထဲ သိမ်းမည်</button>
-                        <button class="btn btn-secondary" id="clearPreviewBtn">🗑️ ပယ်ဖျက်မည်</button>
-                    </div>
-                </div>
-                
-                <div id="loadingMessage" style="display: none; text-align: center; padding: 20px;">
-                    <div class="loading">⏳ သတင်းအချက်အလက်များ ယူနေပါသည်...</div>
+                    <button class="btn btn-success" onclick="importNews()" style="margin-top:10px;">📥 Supabase ထဲသိမ်းမည်</button>
+                    <button class="btn btn-secondary" onclick="clearAutoPreview()">🗑️ ပယ်ဖျက်မည်</button>
                 </div>
             </div>
         </div>
@@ -410,44 +359,48 @@
         <!-- Tab 3: News List -->
         <div id="listTab" class="tab-content">
             <div class="news-list">
-                <h2>📰 သတင်းစာရင်း (စုစုပေါင်း: <span id="totalCount">0</span> ခု)</h2>
+                <h2>📰 သတင်းစာရင်း (စုစုပေါင်း: <span id="totalCount">0</span>)</h2>
                 <div id="newsTableContainer">
-                    <div class="loading">📡 သတင်းများ ဖတ်ရှုနေပါသည်...</div>
+                    <div class="loading">📡 သတင်းများ ဖတ်နေပါသည်...</div>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
-        // ============ Supabase Configuration ============
-        // 🔧 ကိုယ့် Supabase URL နဲ့ Key ကို ဒီမှာ ထည့်ပါ
+        // ============ CONFIGURATION ============
+        // 🔧 ကိုယ့် Supabase URL နဲ့ Key ထည့်ပါ
         const SUPABASE_URL = 'https://tlmzcasltbihfbnupguq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let supabaseClient = null;
+        let importedData = null;
         
-        // ============ Admin Authentication ============
-        const ADMIN_PASSWORD = 'admin123';
-        
-        function checkAuth() {
-            const pwd = prompt('🔐 Admin Password ထည့်ပါ:');
-            if (pwd !== ADMIN_PASSWORD) {
-                showMessage('❌ စကားဝှက် မှားနေပါသည်။', 'error');
-                document.body.innerHTML = '<div style="text-align:center; padding:50px;"><h1>⛔ Access Denied</h1><p>Admin မဟုတ်ပါက ဝင်ခွင့်မရှိပါ။</p><a href="index.html">🏠 ပင်မစာမျက်နှာသို့ ပြန်သွားရန်</a></div>';
-                return false;
+        // ============ INITIALIZE ============
+        async function init() {
+            try {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase connected');
+                
+                // Check if table exists
+                const { data, error } = await supabaseClient.from('news').select('count').limit(1);
+                if (error) {
+                    console.error('Table error:', error);
+                    showMessage('⚠️ Supabase "news" table မရှိသေးပါ။ အရင်ဆုံး table ဖန်တီးပါ။', 'error');
+                } else {
+                    console.log('✅ News table found');
+                    loadNewsList();
+                }
+            } catch (err) {
+                console.error('Init error:', err);
+                showMessage('Supabase ချိတ်ဆက်မှု မအောင်မြင်ပါ။ URL နဲ့ Key စစ်ပါ။', 'error');
             }
-            return true;
         }
         
-        if (!checkAuth()) {
-            throw new Error('Unauthorized');
-        }
-        
-        // ============ Show Message ============
-        function showMessage(msg, type = 'info') {
+        // ============ SHOW MESSAGE ============
+        function showMessage(msg, type) {
             const msgBox = document.getElementById('messageBox');
             msgBox.textContent = msg;
             msgBox.className = `message ${type}`;
@@ -457,180 +410,52 @@
             }, 3000);
         }
         
-        // ============ Tab Switching ============
-        function switchTab(tabId) {
-            // Hide all tabs
+        // ============ TAB SWITCHING ============
+        function switchTab(tab) {
+            // Hide all
             document.getElementById('manualTab').classList.remove('active');
             document.getElementById('autoTab').classList.remove('active');
             document.getElementById('listTab').classList.remove('active');
             
-            // Show selected tab
-            if (tabId === 'manual') {
+            // Show selected
+            if (tab === 'manual') {
                 document.getElementById('manualTab').classList.add('active');
-            } else if (tabId === 'auto') {
+            } else if (tab === 'auto') {
                 document.getElementById('autoTab').classList.add('active');
-            } else if (tabId === 'list') {
+            } else if (tab === 'list') {
                 document.getElementById('listTab').classList.add('active');
                 loadNewsList();
             }
             
-            // Update active button
+            // Update button styles
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                if (btn.getAttribute('data-tab') === tabId) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
+                btn.classList.remove('active');
             });
+            event.target.classList.add('active');
         }
         
-        // Add event listeners to tab buttons
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const tabId = this.getAttribute('data-tab');
-                switchTab(tabId);
-            });
-        });
-        
-        // ============ Auto Import: Fetch News from URL ============
-        async function fetchNewsFromUrl() {
-            const url = document.getElementById('newsUrl').value.trim();
-            
-            if (!url) {
-                showMessage('သတင်းလင့်ခ် (URL) ထည့်ပါ', 'error');
+        // ============ SAVE MANUAL NEWS ============
+        async function saveNews() {
+            if (!supabaseClient) {
+                showMessage('Supabase မချိတ်ဆက်ရသေးပါ', 'error');
                 return;
             }
             
-            // Show loading
-            document.getElementById('loadingMessage').style.display = 'block';
-            document.getElementById('previewArea').style.display = 'none';
+            const title = document.getElementById('title').value.trim();
+            const summary = document.getElementById('summary').value.trim();
             
-            try {
-                // Use a CORS proxy to fetch the webpage
-                const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
-                const response = await fetch(proxyUrl);
-                const data = await response.json();
-                
-                if (!data.contents) {
-                    throw new Error('Page content not found');
-                }
-                
-                // Parse HTML
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(data.contents, 'text/html');
-                
-                // Extract meta tags
-                const title = extractMetaTag(doc, 'og:title') || 
-                             extractMetaTag(doc, 'twitter:title') || 
-                             doc.querySelector('title')?.innerText || 
-                             'ခေါင်းစဉ်မရှိပါ';
-                
-                const description = extractMetaTag(doc, 'og:description') || 
-                                   extractMetaTag(doc, 'twitter:description') || 
-                                   extractMetaTag(doc, 'description') ||
-                                   doc.querySelector('meta[name="description"]')?.getAttribute('content') ||
-                                   'အကျဉ်းချုပ် မရှိပါ';
-                
-                const image = extractMetaTag(doc, 'og:image') || 
-                             extractMetaTag(doc, 'twitter:image') || 
-                             '';
-                
-                // Store extracted data globally
-                window.importedData = {
-                    title: title.substring(0, 200),
-                    summary: description.substring(0, 300),
-                    content: '',
-                    image_url: image,
-                    source: new URL(url).hostname.replace('www.', ''),
-                    category: detectCategory(title + ' ' + description),
-                    reliability: 'medium',
-                    original_url: url
-                };
-                
-                // Show preview
-                showPreview(window.importedData);
-                showMessage('သတင်းအချက်အလက်များ ယူပြီးပါပြီ။ အောက်မှာ စစ်ဆေးပါ။', 'success');
-                
-            } catch (err) {
-                console.error('Fetch error:', err);
-                showMessage('သတင်းအချက်အလက် ယူ၍မရပါ။ သတင်းလင့်ခ် မှန်ကန်မှုရှိမရှိ စစ်ဆေးပါ။', 'error');
-            } finally {
-                document.getElementById('loadingMessage').style.display = 'none';
+            if (!title) {
+                showMessage('ခေါင်းစဉ် ထည့်ပါ', 'error');
+                return;
             }
-        }
-        
-        function extractMetaTag(doc, property) {
-            const meta = doc.querySelector(`meta[property="${property}"], meta[name="${property}"]`);
-            return meta ? meta.getAttribute('content') : null;
-        }
-        
-        function detectCategory(text) {
-            const lowerText = text.toLowerCase();
-            if (lowerText.includes('5g') || lowerText.includes('network')) return '5G';
-            if (lowerText.includes('ai') || lowerText.includes('artificial')) return 'AI';
-            if (lowerText.includes('mobile') || lowerText.includes('ဖုန်း')) return 'Mobile';
-            if (lowerText.includes('internet') || lowerText.includes('အင်တာနက်')) return 'Internet';
-            return 'Technology';
-        }
-        
-        function showPreview(data) {
-            const previewDiv = document.getElementById('previewContent');
-            previewDiv.innerHTML = `
-                <p><strong>📰 ခေါင်းစဉ်:</strong> ${escapeHtml(data.title)}</p>
-                <p><strong>📝 အကျဉ်းချုပ်:</strong> ${escapeHtml(data.summary)}</p>
-                <p><strong>🏷️ အမျိုးအစား:</strong> ${escapeHtml(data.category)}</p>
-                <p><strong>🔗 ရင်းမြစ်:</strong> ${escapeHtml(data.source)}</p>
-                ${data.image_url ? `<img src="${escapeHtml(data.image_url)}" alt="Preview" style="max-width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px;">` : '<p>🖼️ ပုံမရှိပါ</p>'}
-                <p style="margin-top: 10px; color: #64748b; font-size: 12px;">✅ အောက်က "Supabase ထဲ သိမ်းမည်" နှိပ်ရင် သိမ်းပါမည်။</p>
-            `;
-            document.getElementById('previewArea').style.display = 'block';
-        }
-        
-        // ============ Import to Supabase ============
-        async function importToSupabase() {
-            if (!window.importedData) {
-                showMessage('သတင်းအချက်အလက် မရှိပါ။ အရင်ဆုံး သတင်းလင့်ခ် ထည့်ပြီး "ယူမည်" နှိပ်ပါ။', 'error');
+            if (!summary) {
+                showMessage('အကျဉ်းချုပ် ထည့်ပါ', 'error');
                 return;
             }
             
-            try {
-                const newsData = {
-                    title: window.importedData.title,
-                    summary: window.importedData.summary,
-                    content: window.importedData.content || window.importedData.summary,
-                    category: window.importedData.category,
-                    image_url: window.importedData.image_url,
-                    source: window.importedData.source,
-                    reliability: window.importedData.reliability
-                };
-                
-                const { error } = await supabase
-                    .from('news')
-                    .insert([newsData]);
-                
-                if (error) throw error;
-                
-                showMessage('✅ သတင်းအသစ် အောင်မြင်စွာ သိမ်းပြီးပါပြီ!', 'success');
-                clearPreview();
-                document.getElementById('newsUrl').value = '';
-                
-            } catch (err) {
-                console.error('Import error:', err);
-                showMessage('❌ သိမ်းရာတွင် အမှားရှိနေပါသည်: ' + err.message, 'error');
-            }
-        }
-        
-        function clearPreview() {
-            document.getElementById('previewArea').style.display = 'none';
-            window.importedData = null;
-        }
-        
-        // ============ Manual Save ============
-        async function saveManualNews() {
-            const id = document.getElementById('newsId').value;
             const newsData = {
-                title: document.getElementById('title').value.trim(),
-                summary: document.getElementById('summary').value.trim(),
+                title: title,
+                summary: summary,
                 content: document.getElementById('content').value.trim(),
                 category: document.getElementById('category').value.trim(),
                 image_url: document.getElementById('image_url').value.trim(),
@@ -638,43 +463,36 @@
                 reliability: document.getElementById('reliability').value
             };
             
-            if (!newsData.title) {
-                showMessage('ခေါင်းစဉ် ထည့်ရန်လိုအပ်ပါသည်', 'error');
-                return;
-            }
-            
-            if (!newsData.summary) {
-                showMessage('အကျဉ်းချုပ် ထည့်ရန်လိုအပ်ပါသည်', 'error');
-                return;
-            }
+            const newsId = document.getElementById('newsId').value;
             
             try {
-                if (id) {
-                    const { error } = await supabase
+                let result;
+                if (newsId) {
+                    // Update
+                    result = await supabaseClient
                         .from('news')
                         .update(newsData)
-                        .eq('id', parseInt(id));
-                    
-                    if (error) throw error;
-                    showMessage('✅ သတင်းပြင်ပြီးပါပြီ', 'success');
+                        .eq('id', parseInt(newsId));
                 } else {
-                    const { error } = await supabase
+                    // Insert
+                    result = await supabaseClient
                         .from('news')
                         .insert([newsData]);
-                    
-                    if (error) throw error;
-                    showMessage('✅ သတင်းအသစ်ထည့်ပြီးပါပြီ', 'success');
                 }
                 
-                clearManualForm();
+                if (result.error) throw result.error;
+                
+                showMessage('✅ သတင်း အောင်မြင်စွာ သိမ်းပြီးပါပြီ', 'success');
+                clearForm();
                 loadNewsList();
+                
             } catch (err) {
                 console.error('Save error:', err);
-                showMessage('❌ သိမ်းရာတွင် အမှားရှိနေပါသည်: ' + err.message, 'error');
+                showMessage('❌ သိမ်းရာတွင် အမှား: ' + err.message, 'error');
             }
         }
         
-        function clearManualForm() {
+        function clearForm() {
             document.getElementById('newsId').value = '';
             document.getElementById('title').value = '';
             document.getElementById('summary').value = '';
@@ -683,13 +501,126 @@
             document.getElementById('image_url').value = '';
             document.getElementById('source').value = '';
             document.getElementById('reliability').value = 'medium';
-            document.getElementById('formTitle').innerHTML = '➕ သတင်းအသစ်ထည့်ရန် (လက်ဖြင့်)';
+            document.getElementById('formTitle').innerHTML = '➕ သတင်းအသစ်ထည့်ရန်';
         }
         
-        // ============ Edit News ============
-        window.editNews = async function(id) {
+        // ============ AUTO IMPORT ============
+        async function fetchNews() {
+            const url = document.getElementById('newsUrl').value.trim();
+            
+            if (!url) {
+                showMessage('သတင်းလင့်ခ် ထည့်ပါ', 'error');
+                return;
+            }
+            
+            document.getElementById('loadingMsg').style.display = 'block';
+            document.getElementById('previewArea').style.display = 'none';
+            
             try {
-                const { data, error } = await supabase
+                const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+                const response = await fetch(proxyUrl);
+                const data = await response.json();
+                
+                if (!data.contents) throw new Error('No content');
+                
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data.contents, 'text/html');
+                
+                // Get title
+                let title = doc.querySelector('meta[property="og:title"]')?.getAttribute('content');
+                if (!title) title = doc.querySelector('title')?.innerText;
+                if (!title) title = 'ခေါင်းစဉ်မရှိပါ';
+                
+                // Get description
+                let description = doc.querySelector('meta[property="og:description"]')?.getAttribute('content');
+                if (!description) description = doc.querySelector('meta[name="description"]')?.getAttribute('content');
+                if (!description) description = 'အကျဉ်းချုပ် မရှိပါ';
+                
+                // Get image
+                let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content');
+                if (!image) image = '';
+                
+                // Get source
+                let source = new URL(url).hostname.replace('www.', '');
+                
+                // Detect category
+                let category = 'Technology';
+                const fullText = (title + ' ' + description).toLowerCase();
+                if (fullText.includes('5g')) category = '5G';
+                else if (fullText.includes('ai') || fullText.includes('artificial')) category = 'AI';
+                else if (fullText.includes('mobile') || fullText.includes('ဖုန်း')) category = 'Mobile';
+                else if (fullText.includes('internet') || fullText.includes('အင်တာနက်')) category = 'Internet';
+                
+                importedData = {
+                    title: title.substring(0, 200),
+                    summary: description.substring(0, 300),
+                    content: '',
+                    image_url: image,
+                    source: source,
+                    category: category,
+                    reliability: 'medium'
+                };
+                
+                // Show preview
+                const previewDiv = document.getElementById('previewContent');
+                previewDiv.innerHTML = `
+                    <p><strong>📰 ခေါင်းစဉ်:</strong> ${escapeHtml(importedData.title)}</p>
+                    <p><strong>📝 အကျဉ်းချုပ်:</strong> ${escapeHtml(importedData.summary)}</p>
+                    <p><strong>🏷️ အမျိုးအစား:</strong> ${importedData.category}</p>
+                    <p><strong>🔗 ရင်းမြစ်:</strong> ${importedData.source}</p>
+                    ${importedData.image_url ? `<img src="${importedData.image_url}" style="max-width:100%; max-height:150px;">` : '<p>🖼️ ပုံမရှိ</p>'}
+                `;
+                document.getElementById('previewArea').style.display = 'block';
+                showMessage('သတင်းအချက်အလက် ယူပြီးပါပြီ', 'success');
+                
+            } catch (err) {
+                console.error('Fetch error:', err);
+                showMessage('သတင်းယူ၍မရပါ။ လင့်ခ်ကို စစ်ဆေးပါ။', 'error');
+            } finally {
+                document.getElementById('loadingMsg').style.display = 'none';
+            }
+        }
+        
+        async function importNews() {
+            if (!importedData) {
+                showMessage('သတင်းအချက်အလက် မရှိပါ။ အရင်ဆုံး ယူမည်နှိပ်ပါ။', 'error');
+                return;
+            }
+            
+            if (!supabaseClient) {
+                showMessage('Supabase မချိတ်ဆက်ရသေးပါ', 'error');
+                return;
+            }
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('news')
+                    .insert([importedData]);
+                
+                if (error) throw error;
+                
+                showMessage('✅ သတင်းအသစ် သိမ်းပြီးပါပြီ', 'success');
+                clearAutoPreview();
+                document.getElementById('newsUrl').value = '';
+                loadNewsList();
+                
+            } catch (err) {
+                console.error('Import error:', err);
+                showMessage('❌ သိမ်းရာတွင် အမှား: ' + err.message, 'error');
+            }
+        }
+        
+        function clearAutoPreview() {
+            document.getElementById('previewArea').style.display = 'none';
+            importedData = null;
+        }
+        
+        // ============ EDIT NEWS ============
+        async function editNews(id) {
+            if (!supabaseClient) return;
+            
+            try {
+                const { data, error } = await supabaseClient
                     .from('news')
                     .select('*')
                     .eq('id', id)
@@ -707,25 +638,22 @@
                 document.getElementById('reliability').value = data.reliability || 'medium';
                 document.getElementById('formTitle').innerHTML = '✏️ သတင်းပြင်ရန် (ID: ' + data.id + ')';
                 
-                // Switch to manual tab
                 switchTab('manual');
                 
-                // Scroll to form
-                document.querySelector('.news-form').scrollIntoView({ behavior: 'smooth' });
             } catch (err) {
                 console.error('Edit error:', err);
-                showMessage('သတင်းအချက်အလက် ရယူ၍မရပါ', 'error');
+                showMessage('သတင်းရယူ၍မရပါ', 'error');
             }
-        };
+        }
         
-        // ============ Delete News ============
-        window.deleteNews = async function(id) {
-            if (!confirm('ဤသတင်းကို ဖျက်မှာ သေချာပါသလား?\nဖျက်ပါက ပြန်လည်ရယူ၍မရနိုင်ပါ။')) {
-                return;
-            }
+        // ============ DELETE NEWS ============
+        async function deleteNews(id) {
+            if (!confirm('ဖျက်မှာ သေချာလား?')) return;
+            
+            if (!supabaseClient) return;
             
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('news')
                     .delete()
                     .eq('id', id);
@@ -734,16 +662,22 @@
                 
                 showMessage('🗑️ သတင်းဖျက်ပြီးပါပြီ', 'success');
                 loadNewsList();
+                
             } catch (err) {
                 console.error('Delete error:', err);
-                showMessage('ဖျက်ရာတွင် အမှားရှိနေပါသည်', 'error');
+                showMessage('ဖျက်ရာတွင် အမှား', 'error');
             }
-        };
+        }
         
-        // ============ Load News List ============
+        // ============ LOAD NEWS LIST ============
         async function loadNewsList() {
+            if (!supabaseClient) {
+                document.getElementById('newsTableContainer').innerHTML = '<div class="loading">Supabase မချိတ်ဆက်ရသေးပါ</div>';
+                return;
+            }
+            
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('news')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -751,55 +685,36 @@
                 if (error) throw error;
                 
                 document.getElementById('totalCount').textContent = data.length;
-                renderNewsTable(data);
-            } catch (err) {
-                console.error('Error loading news:', err);
-                document.getElementById('newsTableContainer').innerHTML = '<div style="color:red; text-align:center;">❌ သတင်းများ ရယူ၍မရပါ</div>';
-            }
-        }
-        
-        function renderNewsTable(newsArray) {
-            if (!newsArray || newsArray.length === 0) {
-                document.getElementById('newsTableContainer').innerHTML = '<div style="text-align:center; padding:2rem;">📭 သတင်းမရှိသေးပါ။ အသစ်ထည့်ပါ။</div>';
-                return;
-            }
-            
-            const html = `
-                <table>
-                    <thead>
+                
+                if (data.length === 0) {
+                    document.getElementById('newsTableContainer').innerHTML = '<div class="loading">📭 သတင်းမရှိသေးပါ</div>';
+                    return;
+                }
+                
+                let html = '<table><thead><tr><th>ID</th><th>ခေါင်းစဉ်</th><th>အမျိုးအစား</th><th>ရင်းမြစ်</th><th>လုပ်ဆောင်ချက်</th></tr></thead><tbody>';
+                
+                for (const news of data) {
+                    html += `
                         <tr>
-                            <th>ID</th>
-                            <th>ခေါင်းစဉ်</th>
-                            <th>အမျိုးအစား</th>
-                            <th>ရင်းမြစ်</th>
-                            <th>ယုံကြည်ရမှု</th>
-                            <th>လုပ်ဆောင်ချက်</th>
+                            <td>${news.id}</td>
+                            <td style="max-width:250px;">${escapeHtml(news.title)}</td>
+                            <td>${escapeHtml(news.category || '-')}</td>
+                            <td>${escapeHtml(news.source || '-')}</td>
+                            <td>
+                                <button class="btn btn-warning" onclick="editNews(${news.id})" style="padding:5px 10px; font-size:12px;">✏️ ပြင်</button>
+                                <button class="btn btn-danger" onclick="deleteNews(${news.id})" style="padding:5px 10px; font-size:12px;">🗑️ ဖျက်</button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        ${newsArray.map(news => `
-                            <tr>
-                                <td>${news.id}</td>
-                                <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(news.title)}</td>
-                                <td>${escapeHtml(news.category || '-')}</td>
-                                <td>${escapeHtml(news.source || '-')}</td>
-                                <td><span class="status-badge status-${news.reliability || 'medium'}">${getReliabilityText(news.reliability)}</span></td>
-                                <td class="action-buttons">
-                                    <button class="btn btn-warning" onclick="editNews(${news.id})">✏️ ပြင်</button>
-                                    <button class="btn btn-danger" onclick="deleteNews(${news.id})">🗑️ ဖျက်</button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-            document.getElementById('newsTableContainer').innerHTML = html;
-        }
-        
-        function getReliabilityText(level) {
-            if (level === 'high') return '✅ အလွန်ယုံကြည်ရ';
-            if (level === 'medium') return '📊 ယုံကြည်ရ';
-            return '⚠️ စစ်ဆေးရန်';
+                    `;
+                }
+                
+                html += '</tbody></table>';
+                document.getElementById('newsTableContainer').innerHTML = html;
+                
+            } catch (err) {
+                console.error('Load error:', err);
+                document.getElementById('newsTableContainer').innerHTML = '<div class="loading">❌ သတင်းများ ရယူ၍မရပါ</div>';
+            }
         }
         
         function escapeHtml(text) {
@@ -809,16 +724,18 @@
             return div.innerHTML;
         }
         
-        // ============ Add Event Listeners ============
-        document.getElementById('saveManualBtn').addEventListener('click', saveManualNews);
-        document.getElementById('clearFormBtn').addEventListener('click', clearManualForm);
-        document.getElementById('fetchNewsBtn').addEventListener('click', fetchNewsFromUrl);
-        document.getElementById('importToDbBtn').addEventListener('click', importToSupabase);
-        document.getElementById('clearPreviewBtn').addEventListener('click', clearPreview);
+        // ============ MAKE FUNCTIONS GLOBAL ============
+        window.switchTab = switchTab;
+        window.saveNews = saveNews;
+        window.clearForm = clearForm;
+        window.fetchNews = fetchNews;
+        window.importNews = importNews;
+        window.clearAutoPreview = clearAutoPreview;
+        window.editNews = editNews;
+        window.deleteNews = deleteNews;
         
-        // ============ Initialize ============
-        console.log('✅ Admin Panel with Auto Import Ready!');
-        loadNewsList();
+        // ============ START ============
+        init();
     </script>
 </body>
 </html>
