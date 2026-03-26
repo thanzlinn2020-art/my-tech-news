@@ -12,7 +12,6 @@
         .admin-header { background: #0f172a; color: white; padding: 20px; border-radius: 16px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .admin-header h1 { font-size: 1.5rem; }
         .back-link { color: #3b82f6; text-decoration: none; background: white; padding: 8px 16px; border-radius: 8px; }
-        .logout-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
         .tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .tab-btn { padding: 12px 24px; background: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .tab-btn.active { background: #3b82f6; color: white; }
@@ -38,13 +37,22 @@
         .loading { text-align: center; padding: 20px; color: #3b82f6; }
         .preview-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-top: 15px; }
         .preview-card img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
+        .login-box { max-width: 400px; margin: 100px auto; background: white; padding: 35px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; }
+        .login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 16px; }
+        .login-box button { width: 100%; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; }
         @media (max-width: 768px) { .form-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <div id="app">
-        <!-- Content will be loaded here -->
-        <div style="text-align:center; padding:50px;">📡 စတင်နေပါသည်...</div>
+        <div class="login-box">
+            <h2>🔐 Admin Panel</h2>
+            <p style="color:#64748b; margin:15px 0;">စကားဝှက်ထည့်ပါ</p>
+            <input type="password" id="adminPassword" placeholder="စကားဝှက်">
+            <button onclick="checkPassword()">ဝင်ရန်</button>
+            <p style="margin-top:15px; font-size:12px; color:#94a3b8;">Default: admin123</p>
+            <a href="index.html" style="display:block; margin-top:15px; color:#3b82f6;">← ပင်မစာမျက်နှာသို့</a>
+        </div>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -52,27 +60,45 @@
         // ============ SUPABASE CONFIGURATION ============
         const SUPABASE_URL = 'https://tlmzcasltbihfbnupguq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';  // ← ကိုယ့် anon key ထည့်ပါ
+        const ADMIN_PASSWORD = 'admin123';  // လိုချင်ရင် ဒီမှာ ပြောင်းပါ
         
         let supabaseClient = null;
-        let currentUser = null;
         let importedData = null;
+        let isAuthenticated = false;
         
-        // ============ SHOW MESSAGE ============
-        function showMessage(msg, type) {
-            // Remove existing message
-            const oldMsg = document.getElementById('dynamicMessage');
-            if (oldMsg) oldMsg.remove();
+        // ============ CHECK PASSWORD ============
+        window.checkPassword = function() {
+            const password = document.getElementById('adminPassword').value;
             
-            const msgBox = document.createElement('div');
-            msgBox.id = 'dynamicMessage';
-            msgBox.textContent = msg;
-            msgBox.className = `message ${type}`;
-            msgBox.style.display = 'block';
-            document.body.appendChild(msgBox);
-            
-            setTimeout(() => {
-                if (msgBox) msgBox.remove();
-            }, 4000);
+            if (password === ADMIN_PASSWORD) {
+                isAuthenticated = true;
+                initAdminPanel();
+            } else {
+                alert('စကားဝှက် မှားနေပါသည်။');
+            }
+        };
+        
+        // ============ INIT ADMIN PANEL ============
+        async function initAdminPanel() {
+            try {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                
+                // Test connection
+                const { error } = await supabaseClient.from('news').select('count').limit(1);
+                if (error) {
+                    console.error('Supabase connection error:', error);
+                    document.getElementById('app').innerHTML = '<div class="login-box"><h2>❌ Supabase ချိတ်ဆက်မှု မအောင်မြင်ပါ</h2><p>URL နှင့် Key ကိုစစ်ဆေးပါ။</p><a href="index.html">← နောက်သို့</a></div>';
+                    return;
+                }
+                
+                renderAdminPanel();
+                loadNewsList();
+                console.log('✅ Admin Panel Ready');
+                
+            } catch (err) {
+                console.error('Init error:', err);
+                document.getElementById('app').innerHTML = '<div class="login-box"><h2>❌ အမှားရှိနေပါသည်</h2><p>' + err.message + '</p><a href="index.html">← နောက်သို့</a></div>';
+            }
         }
         
         // ============ RENDER ADMIN PANEL ============
@@ -82,8 +108,7 @@
                     <div class="admin-header">
                         <h1>👑 Admin Panel - သတင်းစီမံခန့်ခွဲမှု</h1>
                         <div>
-                            <span id="userEmail" style="margin-right:15px;"></span>
-                            <button class="logout-btn" onclick="adminLogout()">🚪 ထွက်ရန်</button>
+                            <button class="btn btn-secondary" onclick="logout()" style="background:#ef4444;">🚪 ထွက်ရန်</button>
                             <a href="index.html" class="back-link">🏠 Frontend</a>
                         </div>
                     </div>
@@ -144,95 +169,28 @@
             document.getElementById('app').innerHTML = html;
         }
         
-        // ============ AUTHENTICATION ============
-        async function init() {
-            try {
-                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                
-                const { data: { session }, error } = await supabaseClient.auth.getSession();
-                
-                if (error || !session) {
-                    showLoginForm();
-                    return;
-                }
-                
-                currentUser = session.user;
-                
-                // Check if user is admin
-                if (currentUser.email !== 'admin@mytechnews.com') {
-                    document.getElementById('app').innerHTML = `
-                        <div style="text-align:center; padding:50px;">
-                            <h1>⛔ ဝင်ခွင့်မရှိပါ</h1>
-                            <p>Admin အကောင့်ဖြင့်သာ ဝင်ရောက်နိုင်ပါသည်။</p>
-                            <a href="index.html" style="color:#3b82f6;">🏠 ပင်မစာမျက်နှာသို့</a>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                // Render admin panel
-                renderAdminPanel();
-                document.getElementById('userEmail').innerHTML = `👤 ${currentUser.email}`;
-                loadNewsList();
-                console.log('✅ Admin Panel Ready');
-                
-            } catch (err) {
-                console.error('Init error:', err);
-                showLoginForm();
-            }
-        }
-        
-        function showLoginForm() {
-            const loginHtml = `
-                <div style="max-width:400px; margin:100px auto; background:white; padding:35px; border-radius:20px; box-shadow:0 4px 20px rgba(0,0,0,0.1);">
-                    <h2 style="margin-bottom:20px;">🔐 Admin Login</h2>
-                    <p style="color:#64748b; margin-bottom:20px;">Admin အကောင့်ဖြင့်သာ ဝင်ရောက်နိုင်ပါသည်။</p>
-                    <input type="email" id="loginEmail" placeholder="admin@mytechnews.com" style="width:100%; padding:12px; margin:10px 0; border:1px solid #cbd5e1; border-radius:10px; font-size:16px;">
-                    <input type="password" id="loginPassword" placeholder="စကားဝှက်" style="width:100%; padding:12px; margin:10px 0; border:1px solid #cbd5e1; border-radius:10px; font-size:16px;">
-                    <button onclick="adminLogin()" style="width:100%; padding:12px; background:#3b82f6; color:white; border:none; border-radius:10px; font-size:16px; font-weight:600; cursor:pointer; margin-top:10px;">Login</button>
-                    <p style="margin-top:20px; font-size:12px; color:#94a3b8; text-align:center;">Supabase Dashboard တွင် အကောင့်ဖန်တီးပါ။</p>
-                </div>
-            `;
-            document.getElementById('app').innerHTML = loginHtml;
-        }
-        
-        window.adminLogin = async function() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            if (!email || !password) {
-                alert('Email နှင့် စကားဝှက် ထည့်ပါ');
-                return;
-            }
-            
-            try {
-                const { data, error } = await supabaseClient.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
-                
-                if (error) {
-                    alert('Login မအောင်မြင်ပါ: ' + error.message);
-                    return;
-                }
-                
-                if (data.user.email !== 'admin@mytechnews.com') {
-                    alert('သင်သည် Admin မဟုတ်ပါ။');
-                    await supabaseClient.auth.signOut();
-                    return;
-                }
-                
-                init();
-                
-            } catch (err) {
-                alert('Login error: ' + err.message);
-            }
+        // ============ LOGOUT ============
+        window.logout = function() {
+            isAuthenticated = false;
+            location.reload();
         };
         
-        window.adminLogout = async function() {
-            await supabaseClient.auth.signOut();
-            init();
-        };
+        // ============ SHOW MESSAGE ============
+        function showMessage(msg, type) {
+            const oldMsg = document.getElementById('dynamicMessage');
+            if (oldMsg) oldMsg.remove();
+            
+            const msgBox = document.createElement('div');
+            msgBox.id = 'dynamicMessage';
+            msgBox.textContent = msg;
+            msgBox.className = `message ${type}`;
+            msgBox.style.display = 'block';
+            document.body.appendChild(msgBox);
+            
+            setTimeout(() => {
+                if (msgBox) msgBox.remove();
+            }, 4000);
+        }
         
         // ============ TAB SWITCHING ============
         window.switchTab = function(tab) {
@@ -436,7 +394,7 @@
                     return;
                 }
                 
-                let html = ' <table> <thead> <tr> <th>ID</th> <th>ခေါင်းစဉ်</th> <th>အမျိုးအစား</th> <th>ရင်းမြစ်</th> <th>လုပ်ဆောင်ချက်</th> </tr> </thead> <tbody>';
+                let html = '<table><thead><tr><th>ID</th><th>ခေါင်းစဉ်</th><th>အမျိုးအစား</th><th>ရင်းမြစ်</th><th>လုပ်ဆောင်ချက်</th></tr></thead><tbody>';
                 for (const news of data) {
                     html += `<tr>
                         <td>${news.id}</td>
@@ -446,7 +404,7 @@
                         <td><button class="btn btn-danger" onclick="deleteNews(${news.id})" style="padding:5px 10px;">🗑️ ဖျက်</button></td>
                     </tr>`;
                 }
-                html += '</tbody> </table>';
+                html += '</tbody></table>';
                 container.innerHTML = html;
                 
             } catch (err) {
@@ -483,8 +441,7 @@
             return div.innerHTML;
         }
         
-        // ============ START ============
-        init();
+        // No auto init - wait for password
     </script>
 </body>
 </html>
