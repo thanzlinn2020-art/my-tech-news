@@ -31,9 +31,9 @@
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
         th { background: #f8fafc; }
-        .message { padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; display: none; position: fixed; top: 20px; right: 20px; z-index: 1000; }
-        .message.success { background: #d1fae5; color: #065f46; }
-        .message.error { background: #fee2e2; color: #991b1b; }
+        .message { padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; display: none; position: fixed; top: 20px; right: 20px; z-index: 1000; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .message.success { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
+        .message.error { background: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444; }
         .loading { text-align: center; padding: 20px; color: #3b82f6; }
         .preview-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-top: 15px; }
         .preview-card img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
@@ -48,46 +48,49 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ============ SUPABASE CONFIGURATION ============
+        // 🔧 ကိုယ့် Supabase URL နဲ့ Key ကို ဒီမှာ ထည့်ပါ
         const SUPABASE_URL = 'https://tlmzcasltbihfbnupguq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';  // ← ကိုယ့် anon key ထည့်ပါ
         
         let supabaseClient = null;
         let importedData = null;
         
-        // ============ INIT ============
+        // ============ INIT - No Login Required ============
         async function init() {
             try {
+                // Create Supabase client
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 
                 // Test connection
-                const { error } = await supabaseClient.from('news').select('count').limit(1);
+                const { data, error } = await supabaseClient.from('news').select('count').limit(1);
+                
                 if (error) {
                     console.error('Supabase error:', error);
-                    document.getElementById('app').innerHTML = `
-                        <div style="text-align:center; padding:50px; background:white; border-radius:16px; margin:50px auto; max-width:500px;">
-                            <h2>❌ Supabase ချိတ်ဆက်မှု မအောင်မြင်ပါ</h2>
-                            <p style="color:#ef4444;">${error.message}</p>
-                            <p>URL နှင့် Key ကို စစ်ဆေးပါ။</p>
-                            <a href="index.html" style="color:#3b82f6;">← ပင်မစာမျက်နှာသို့</a>
-                        </div>
-                    `;
+                    showError('Supabase ချိတ်ဆက်မှု မအောင်မြင်ပါ။ URL နှင့် Key ကိုစစ်ဆေးပါ။');
                     return;
                 }
                 
+                console.log('✅ Supabase connected successfully');
                 renderAdminPanel();
                 loadNewsList();
-                console.log('✅ Admin Panel Ready');
                 
             } catch (err) {
                 console.error('Init error:', err);
-                document.getElementById('app').innerHTML = `
-                    <div style="text-align:center; padding:50px;">
-                        <h2>❌ အမှားရှိနေပါသည်</h2>
-                        <p>${err.message}</p>
-                        <a href="index.html">← ပင်မစာမျက်နှာသို့</a>
-                    </div>
-                `;
+                showError('အမှားရှိနေပါသည်: ' + err.message);
             }
+        }
+        
+        function showError(msg) {
+            document.getElementById('app').innerHTML = `
+                <div style="text-align:center; padding:50px; background:white; border-radius:16px; margin:50px auto; max-width:500px;">
+                    <h2 style="color:#ef4444;">❌ အမှားရှိနေပါသည်</h2>
+                    <p style="color:#64748b; margin:15px 0;">${msg}</p>
+                    <p style="font-size:12px; color:#94a3b8;">Supabase URL: ${SUPABASE_URL}</p>
+                    <button onclick="location.reload()" style="margin-top:15px; padding:8px 20px; background:#3b82f6; color:white; border:none; border-radius:8px; cursor:pointer;">ပြန်စမ်းမည်</button>
+                    <br><br>
+                    <a href="index.html" style="color:#3b82f6;">← ပင်မစာမျက်နှာသို့</a>
+                </div>
+            `;
         }
         
         // ============ RENDER ADMIN PANEL ============
@@ -97,13 +100,13 @@
                     <div class="admin-header">
                         <h1>👑 Admin Panel - သတင်းစီမံခန့်ခွဲမှု</h1>
                         <div>
-                            <a href="index.html" class="back-link">🏠 Frontend</a>
+                            <a href="index.html" class="back-link">🏠 Frontend သို့သွားရန်</a>
                         </div>
                     </div>
                     
                     <div class="tabs">
                         <button class="tab-btn active" onclick="switchTab('manual')">✍️ လက်ဖြင့်ထည့်ရန်</button>
-                        <button class="tab-btn" onclick="switchTab('auto')">🤖 Auto Import</button>
+                        <button class="tab-btn" onclick="switchTab('auto')">🤖 Auto Import (Link ထည့်ရုံ)</button>
                         <button class="tab-btn" onclick="switchTab('list')">📋 သတင်းစာရင်း</button>
                     </div>
                     
@@ -111,17 +114,40 @@
                         <div class="news-form">
                             <h2>➕ သတင်းအသစ်ထည့်ရန်</h2>
                             <input type="hidden" id="newsId">
-                            <div class="form-group"><label>📰 ခေါင်းစဉ် *</label><input type="text" id="title" placeholder="သတင်းခေါင်းစဉ်"></div>
-                            <div class="form-group"><label>📝 အကျဉ်းချုပ် *</label><textarea id="summary" rows="2" placeholder="သတင်းအကျဉ်းချုပ်"></textarea></div>
-                            <div class="form-group"><label>📄 အပြည့်အစုံ</label><textarea id="content" rows="4" placeholder="သတင်းအပြည့်အစုံ"></textarea></div>
-                            <div class="form-row">
-                                <div class="form-group"><label>🏷️ အမျိုးအစား</label><input type="text" id="category" placeholder="AI, 5G, Mobile"></div>
-                                <div class="form-group"><label>🔗 ရင်းမြစ်</label><input type="text" id="source" placeholder="BBC, VOA"></div>
+                            <div class="form-group">
+                                <label>📰 ခေါင်းစဉ် *</label>
+                                <input type="text" id="title" placeholder="သတင်းခေါင်းစဉ်">
+                            </div>
+                            <div class="form-group">
+                                <label>📝 အကျဉ်းချုပ် *</label>
+                                <textarea id="summary" rows="2" placeholder="သတင်းအကျဉ်းချုပ်"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>📄 အပြည့်အစုံ</label>
+                                <textarea id="content" rows="4" placeholder="သတင်းအပြည့်အစုံ"></textarea>
                             </div>
                             <div class="form-row">
-                                <div class="form-group"><label>🖼️ ပုံလင့်ခ်</label><input type="text" id="image_url" placeholder="https://..."></div>
-                                <div class="form-group"><label>⭐ ယုံကြည်ရမှု</label>
-                                    <select id="reliability"><option value="high">အလွန်ယုံကြည်ရ</option><option value="medium" selected>ယုံကြည်ရ</option><option value="low">စစ်ဆေးရန်</option></select>
+                                <div class="form-group">
+                                    <label>🏷️ အမျိုးအစား</label>
+                                    <input type="text" id="category" placeholder="AI, 5G, Mobile, Internet">
+                                </div>
+                                <div class="form-group">
+                                    <label>🔗 ရင်းမြစ်</label>
+                                    <input type="text" id="source" placeholder="BBC Burmese, VOA, etc.">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>🖼️ ပုံလင့်ခ်</label>
+                                    <input type="text" id="image_url" placeholder="https://example.com/image.jpg">
+                                </div>
+                                <div class="form-group">
+                                    <label>⭐ ယုံကြည်ရမှု</label>
+                                    <select id="reliability">
+                                        <option value="high">အလွန်ယုံကြည်ရ (High)</option>
+                                        <option value="medium" selected>ယုံကြည်ရ (Medium)</option>
+                                        <option value="low">စစ်ဆေးရန် (Low)</option>
+                                    </select>
                                 </div>
                             </div>
                             <div style="display: flex; gap: 10px; margin-top: 20px;">
@@ -133,23 +159,29 @@
                     
                     <div id="autoTab" class="tab-content">
                         <div class="auto-import-form">
-                            <h2>🤖 Auto Import - Link ထည့်ရုံသာ</h2>
-                            <div class="form-group"><label>🔗 သတင်းလင့်ခ် (URL)</label><input type="url" id="newsUrl" placeholder="https://www.bbc.com/burmese/..."></div>
-                            <button class="btn btn-primary" onclick="fetchNews()">🔍 သတင်းယူမည်</button>
-                            <div id="loadingMsg" style="display:none;" class="loading">⏳ ယူနေပါသည်...</div>
-                            <div id="previewArea" style="display:none; margin-top:20px;">
-                                <h3>📋 ယူထားတဲ့ အချက်အလက်</h3>
+                            <h2>🤖 Auto Import - သတင်းလင့်ခ် တစ်ခုတည်းနဲ့ အလိုလိုပါလာ</h2>
+                            <p style="color:#64748b; margin-bottom:20px;">📌 သတင်းလင့်ခ် (URL) ကိုထည့်ပါ။ ခေါင်းစဉ်၊ အကျဉ်းချုပ်၊ ရုပ်ပုံတွေ အလိုလိုပါလာပါမယ်။</p>
+                            <div class="form-group">
+                                <label>🔗 သတင်းလင့်ခ် (URL)</label>
+                                <input type="url" id="newsUrl" placeholder="https://www.bbc.com/burmese/..." style="width:100%; padding:12px; border:2px solid #e2e8f0; border-radius:8px;">
+                            </div>
+                            <button class="btn btn-primary" onclick="fetchNews()">🔍 သတင်းအချက်အလက်ယူမည်</button>
+                            <div id="loadingMsg" style="display:none; margin-top:15px;" class="loading">⏳ သတင်းအချက်အလက်များ ယူနေပါသည်...</div>
+                            <div id="previewArea" style="display:none; margin-top:25px;">
+                                <h3>📋 ယူထားတဲ့ အချက်အလက်များ</h3>
                                 <div id="previewContent" class="preview-card"></div>
-                                <button class="btn btn-success" onclick="importNews()" style="margin-top:10px;">📥 Supabase ထဲသိမ်းမည်</button>
-                                <button class="btn btn-secondary" onclick="clearPreview()">🗑️ ပယ်ဖျက်မည်</button>
+                                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                    <button class="btn btn-success" onclick="importNews()">📥 Supabase ထဲ သိမ်းမည်</button>
+                                    <button class="btn btn-secondary" onclick="clearPreview()">🗑️ ပယ်ဖျက်မည်</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
                     <div id="listTab" class="tab-content">
                         <div class="news-list">
-                            <h2>📰 သတင်းစာရင်း (စုစုပေါင်း: <span id="totalCount">0</span>)</h2>
-                            <div id="newsTableContainer"><div class="loading">📡 သတင်းများ ဖတ်နေပါသည်...</div></div>
+                            <h2>📰 သတင်းစာရင်း (စုစုပေါင်း: <span id="totalCount">0</span> ခု)</h2>
+                            <div id="newsTableContainer"><div class="loading">📡 သတင်းများ ဖတ်ရှုနေပါသည်...</div></div>
                         </div>
                     </div>
                 </div>
@@ -301,7 +333,7 @@
                     <p><strong>📝 အကျဉ်းချုပ်:</strong> ${escapeHtml(importedData.summary)}</p>
                     <p><strong>🏷️ အမျိုးအစား:</strong> ${importedData.category}</p>
                     <p><strong>🔗 ရင်းမြစ်:</strong> ${importedData.source}</p>
-                    ${importedData.image_url ? `<img src="${importedData.image_url}" style="max-width:100%; max-height:150px;">` : '<p>🖼️ ပုံမရှိပါ</p>'}
+                    ${importedData.image_url ? `<img src="${importedData.image_url}" style="max-width:100%; max-height:150px; border-radius:8px;">` : '<p>🖼️ ပုံမရှိပါ</p>'}
                 `;
                 document.getElementById('previewArea').style.display = 'block';
                 showMessage('✅ သတင်းအချက်အလက် ယူပြီးပါပြီ', 'success');
@@ -376,7 +408,7 @@
                     return;
                 }
                 
-                let html = ' <table> <thead> <tr> <th>ID</th> <th>ခေါင်းစဉ်</th> <th>အမျိုးအစား</th> <th>ရင်းမြစ်</th> <th>လုပ်ဆောင်ချက်</th> </tr> </thead> <tbody>';
+                let html = ' 穿戴 <thead> <tr> <th>ID</th> <th>ခေါင်းစဉ်</th> <th>အမျိုးအစား</th> <th>ရင်းမြစ်</th> <th>လုပ်ဆောင်ချက်</th> </tr> </thead> <tbody>';
                 for (const news of data) {
                     html += `
                         <tr>
