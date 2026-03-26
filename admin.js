@@ -7,26 +7,55 @@ const ADMIN_PASSWORD = 'admin123';
 if (prompt('Password:') !== ADMIN_PASSWORD) { document.body.innerHTML = 'Denied'; }
 // admin.js ထဲမှာ ထည့်ရန်
 async function fetchMetadata() {
-    const url = document.getElementById('newsLink').value;
+    const urlInput = document.getElementById('newsLink');
+    const url = urlInput.value.trim();
+    
     if (!url) return alert("Link အရင်ထည့်ပါ");
 
-    // Link Preview API (Free Tier သုံးထားပါတယ်)
-    const apiKey = '56d367468686e065759714856037a1a4'; // ဒီ Key ကို သုံးနိုင်ပါတယ်
-    
-    try {
-        const response = await fetch(`https://api.linkpreview.net/?key=${apiKey}&q=${url}`);
-        const data = await response.json();
+    // Fetch Button ကို ခဏပိတ်ထားမယ် (Loading ပြချင်လို့)
+    const fetchBtn = document.querySelector('button[onclick="fetchMetadata()"]');
+    fetchBtn.innerText = "Loading...";
+    fetchBtn.disabled = true;
 
-        if (data.title) {
-            document.getElementById('title').value = data.title;
-            document.getElementById('summary').value = data.description;
-            // ပုံပါ ပါလာရင် image_url column ထဲ ထည့်ဖို့ (ရှိခဲ့လျှင်)
-            // document.getElementById('image_url').value = data.image; 
-            alert("အချက်အလက်များ ရရှိပါပြီ။ လိုအပ်တာ ပြင်ပြီး သိမ်းဆည်းနိုင်ပါတယ်။");
+    // အခမဲ့သုံးလို့ရတဲ့ တခြား API တစ်ခုနဲ့ စမ်းကြည့်မယ်
+    try {
+        const response = await fetch(`https://api.peekalink.io/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-API-Key': '67b3f94c-8367-4686-9a2f-e06575971485' // Key လဲထားပါတယ်
+            },
+            body: JSON.stringify({ link: url })
+        });
+
+        // အကယ်၍ အပေါ်က API အလုပ်မလုပ်ရင် နောက်တစ်နည်း (Linkpreview.net) နဲ့ ပြန်စမ်းမယ်
+        if (!response.ok) {
+            const backupRes = await fetch(`https://api.linkpreview.net/?key=56d367468686e065759714856037a1a4&q=${encodeURIComponent(url)}`);
+            const data = await backupRes.json();
+            fillForm(data);
+        } else {
+            const data = await response.json();
+            fillForm(data);
         }
+
     } catch (error) {
-        console.error("Error fetching metadata:", error);
-        alert("အချက်အလက်ဆွဲယူလို့မရပါ။ ကိုယ်တိုင်ဖြည့်စွက်ပေးပါ။");
+        console.error("Error:", error);
+        alert("အချက်အလက် ဆွဲယူလို့မရပါ။ ကိုယ်တိုင် ဖြည့်စွက်ပေးပါ။");
+    } finally {
+        fetchBtn.innerText = "Fetch";
+        fetchBtn.disabled = false;
+    }
+}
+
+// Form ထဲမှာ အချက်အလက် ဖြည့်ပေးတဲ့ function
+function fillForm(data) {
+    if (data.title) {
+        document.getElementById('title').value = data.title;
+        document.getElementById('summary').value = data.description || "";
+        // ပုံလင့်ခ် ရှိရင် သိမ်းထားဖို့ (image_url input ရှိလျှင်)
+        if(document.getElementById('image_url')) {
+            document.getElementById('image_url').value = data.image || data.url;
+        }
     }
 }
 async function loadAdminNews() {
