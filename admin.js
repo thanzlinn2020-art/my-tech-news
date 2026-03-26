@@ -5,7 +5,30 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const ADMIN_PASSWORD = 'admin123'; 
 if (prompt('Password:') !== ADMIN_PASSWORD) { document.body.innerHTML = 'Denied'; }
+// admin.js ထဲမှာ ထည့်ရန်
+async function fetchMetadata() {
+    const url = document.getElementById('newsLink').value;
+    if (!url) return alert("Link အရင်ထည့်ပါ");
 
+    // Link Preview API (Free Tier သုံးထားပါတယ်)
+    const apiKey = '56d367468686e065759714856037a1a4'; // ဒီ Key ကို သုံးနိုင်ပါတယ်
+    
+    try {
+        const response = await fetch(`https://api.linkpreview.net/?key=${apiKey}&q=${url}`);
+        const data = await response.json();
+
+        if (data.title) {
+            document.getElementById('title').value = data.title;
+            document.getElementById('summary').value = data.description;
+            // ပုံပါ ပါလာရင် image_url column ထဲ ထည့်ဖို့ (ရှိခဲ့လျှင်)
+            // document.getElementById('image_url').value = data.image; 
+            alert("အချက်အလက်များ ရရှိပါပြီ။ လိုအပ်တာ ပြင်ပြီး သိမ်းဆည်းနိုင်ပါတယ်။");
+        }
+    } catch (error) {
+        console.error("Error fetching metadata:", error);
+        alert("အချက်အလက်ဆွဲယူလို့မရပါ။ ကိုယ်တိုင်ဖြည့်စွက်ပေးပါ။");
+    }
+}
 async function loadAdminNews() {
     const { data } = await supabase.from('news').select('*').order('created_at', { ascending: false });
     const tbody = document.getElementById('newsListBody');
