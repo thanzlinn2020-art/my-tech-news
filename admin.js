@@ -47,9 +47,10 @@ async function saveNews() {
 
     if (!title || !summary) return alert("ခေါင်းစဉ်နှင့် အကျဉ်းချုပ် ဖြည့်ပါ");
 
+    // လက်သည်းကွင်း [ ] ကို သေချာကြည့်ပါ
     const { error } = await _supabase
         .from('news')
-        .insert([{ title, summary, category, reliability }]);
+        .insert([{ title, summary, category, reliability }]); 
 
     if (error) {
         alert("Error: " + error.message);
