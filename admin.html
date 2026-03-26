@@ -106,41 +106,87 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
-        // ============ SUPABASE CONFIGURATION ============
-        // 🔧 ကိုယ့် Supabase URL နဲ့ Key ကို ဒီမှာ ထည့်ပါ
-        const SUPABASE_URL = 'https://tlmzcasltbihfbnupguq.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';  // ← ကိုယ့် anon key ထည့်ပါ
-        
-        let supabaseClient = null;
-        let importedData = null;
-        
-        // ============ INITIALIZE ============
-        async function init() {
-            try {
-                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                console.log('✅ Supabase connected');
-                
-                const { data, error } = await supabaseClient.from('news').select('count').limit(1);
-                if (error) {
-                    console.error('Connection test error:', error);
-                    showMessage('⚠️ Supabase ချိတ်ဆက်မှု မအောင်မြင်ပါ။ URL နဲ့ Key စစ်ပါ။', 'error');
-                } else {
-                    console.log('✅ Supabase connection successful');
-                    loadNewsList();
-                }
-            } catch (err) {
-                console.error('Init error:', err);
-                showMessage('Supabase ချိတ်ဆက်မှု မအောင်မြင်ပါ။', 'error');
-            }
-        }
-        
-        function showMessage(msg, type) {
-            const msgBox = document.getElementById('messageBox');
-            msgBox.textContent = msg;
-            msgBox.className = `message ${type}`;
-            msgBox.style.display = 'block';
-            setTimeout(() => { msgBox.style.display = 'none'; }, 4000);
-        }
+        // ============ SUPABASE AUTH CONFIGURATION ============
+const SUPABASE_URL = 'https://tlmzcasltbihfbnupguq.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';  // ← ကိုယ့် anon key ထည့်ပါ
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let currentUser = null;
+
+// ============ CHECK AUTHENTICATION ============
+async function checkAdminAuth() {
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    
+    if (error || !session) {
+        showLoginForm();
+        return false;
+    }
+    
+    currentUser = session.user;
+    
+    // Check if user is admin (only admin@mytechnews.com can access)
+    if (currentUser.email !== 'admin@mytechnews.com') {
+        showMessage('သင်သည် Admin မဟုတ်ပါ။ ဝင်ခွင့်မရှိပါ။', 'error');
+        document.body.innerHTML = `
+            <div style="text-align:center; padding:50px;">
+                <h1>⛔ ဝင်ခွင့်မရှိပါ</h1>
+                <p>Admin အကောင့်ဖြင့်သာ ဝင်ရောက်နိုင်ပါသည်။</p>
+                <a href="index.html" style="color:#3b82f6;">🏠 ပင်မစာမျက်နှာသို့</a>
+            </div>
+        `;
+        return false;
+    }
+    
+    return true;
+}
+
+function showLoginForm() {
+    const loginHtml = `
+        <div style="max-width:400px; margin:100px auto; background:white; padding:35px; border-radius:20px; box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+            <h2 style="margin-bottom:20px;">🔐 Admin Login</h2>
+            <p style="color:#64748b; margin-bottom:20px;">Admin အကောင့်ဖြင့်သာ ဝင်ရောက်နိုင်ပါသည်။</p>
+            <input type="email" id="loginEmail" placeholder="admin@mytechnews.com" style="width:100%; padding:12px; margin:10px 0; border:1px solid #cbd5e1; border-radius:10px; font-size:16px;">
+            <input type="password" id="loginPassword" placeholder="စကားဝှက်" style="width:100%; padding:12px; margin:10px 0; border:1px solid #cbd5e1; border-radius:10px; font-size:16px;">
+            <button onclick="adminLogin()" style="width:100%; padding:12px; background:#3b82f6; color:white; border:none; border-radius:10px; font-size:16px; font-weight:600; cursor:pointer; margin-top:10px;">Login</button>
+            <p style="margin-top:20px; font-size:12px; color:#94a3b8; text-align:center;">အကယ်၍ အကောင့်မရှိသေးပါက Supabase Dashboard တွင် ဖန်တီးပါ။</p>
+        </div>
+    `;
+    document.body.innerHTML = loginHtml;
+}
+
+window.adminLogin = async function() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    if (!email || !password) {
+        alert('Email နှင့် စကားဝှက် ထည့်ပါ');
+        return;
+    }
+    
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
+    
+    if (error) {
+        alert('Login မအောင်မြင်ပါ: ' + error.message);
+        return;
+    }
+    
+    if (data.user.email !== 'admin@mytechnews.com') {
+        alert('သင်သည် Admin မဟုတ်ပါ။');
+        await supabaseClient.auth.signOut();
+        return;
+    }
+    
+    location.reload();
+};
+
+// ============ LOGOUT FUNCTION ============
+window.adminLogout = async function() {
+    await supabaseClient.auth.signOut();
+    location.reload();
+};
         
         // ============ TAB SWITCHING ============
         document.querySelectorAll('.tab-btn').forEach(btn => {
