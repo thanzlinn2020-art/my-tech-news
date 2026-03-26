@@ -288,52 +288,66 @@ async function fetchNews() {
 }
         
         // ============ IMPORT TO SUPABASE ============
-        async function importNews() {
-            if (!importedData) {
-                showMessage('သတင်းအချက်အလက် မရှိပါ။ အရင်ဆုံး ယူမည်နှိပ်ပါ။', 'error');
-                return;
+        // ============ IMPORT NEWS WITH DEBUG ============
+async function importNews() {
+    if (!importedData) {
+        showMessage('သတင်းအချက်အလက် မရှိပါ။ အရင်ဆုံး ယူမည်နှိပ်ပါ။', 'error');
+        return;
+    }
+    
+    if (!supabaseClient) {
+        showMessage('Supabase မချိတ်ဆက်ရသေးပါ', 'error');
+        return;
+    }
+    
+    try {
+        const newsData = {
+            title: importedData.title,
+            summary: importedData.summary,
+            content: importedData.content || importedData.summary,
+            category: importedData.category,
+            image_url: importedData.image_url,
+            source: importedData.source,
+            reliability: importedData.reliability
+        };
+        
+        console.log('📝 Importing news:', newsData);
+        console.log('🔑 Using anon key:', SUPABASE_ANON_KEY.substring(0, 20) + '...');
+        
+        // Try insert with select
+        const { data, error } = await supabaseClient
+            .from('news')
+            .insert([newsData])
+            .select();
+        
+        if (error) {
+            console.error('❌ Insert error:', error);
+            
+            // Show detailed error message
+            let errorMsg = error.message;
+            if (error.code === 'PGRST301' || error.message.includes('JWT')) {
+                errorMsg = 'Supabase anon key မှားနေပါသည်။ Dashboard ကနေ anon key ကိုပြန်ယူပါ။';
+            } else if (error.message.includes('permission denied') || error.message.includes('row-level security')) {
+                errorMsg = 'RLS Policy ကြောင့် သိမ်းလို့မရပါ။ SQL Editor မှာ Policy ထည့်ပါ။';
             }
             
-            if (!supabaseClient) {
-                showMessage('Supabase မချိတ်ဆက်ရသေးပါ', 'error');
-                return;
-            }
-            
-            try {
-                const newsData = {
-                    title: importedData.title,
-                    summary: importedData.summary,
-                    content: importedData.content || importedData.summary,
-                    category: importedData.category,
-                    image_url: importedData.image_url,
-                    source: importedData.source,
-                    reliability: importedData.reliability
-                };
-                
-                console.log('Importing:', newsData);
-                
-                const { data, error } = await supabaseClient
-                    .from('news')
-                    .insert([newsData])
-                    .select();
-                
-                if (error) {
-                    console.error('Import error:', error);
-                    showMessage('❌ သိမ်းရာတွင် အမှား: ' + error.message, 'error');
-                    return;
-                }
-                
-                showMessage('✅ သတင်းအသစ် အောင်မြင်စွာ သိမ်းပြီးပါပြီ!', 'success');
-                document.getElementById('previewArea').style.display = 'none';
-                document.getElementById('newsUrl').value = '';
-                importedData = null;
-                loadNewsList();
-                
-            } catch (err) {
-                console.error('Import error:', err);
-                showMessage('❌ အမှားရှိနေပါသည်: ' + err.message, 'error');
-            }
+            showMessage('❌ ' + errorMsg, 'error');
+            return;
         }
+        
+        console.log('✅ Insert success:', data);
+        showMessage('✅ သတင်းအသစ် အောင်မြင်စွာ သိမ်းပြီးပါပြီ!', 'success');
+        
+        // Clear and refresh
+        clearAutoPreview();
+        document.getElementById('newsUrl').value = '';
+        loadNewsList();
+        
+    } catch (err) {
+        console.error('❌ Import error:', err);
+        showMessage('❌ သိမ်းရာတွင် အမှား: ' + (err.message || 'Unknown error'), 'error');
+    }
+}
 
         // ============ SUPABASE AUTH LOGIN ============
 let currentUser = null;
