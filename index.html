@@ -16,6 +16,22 @@
             <h1>✨ နည်းပညာသတင်းများ ✨</h1>
             <p>Supabase နှင့် ချိတ်ဆက်ထားသော နောက်ဆုံးရသတင်းစုံ</p>
         </div>
+        <div class="category-filter" style="margin-bottom: 20px; display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+    <button onclick="filterByCategory('အားလုံး')" class="cat-btn">အားလုံး</button>
+    <button onclick="filterByCategory('နိုင်ငံတကာ')" class="cat-btn">နိုင်ငံတကာ</button>
+    <button onclick="filterByCategory('ပြည်တွင်း')" class="cat-btn">ပြည်တွင်း</button>
+    <button onclick="filterByCategory('ဖုန်း')" class="cat-btn">ဖုန်း</button>
+    <button onclick="filterByCategory('AI')" class="cat-btn">AI</button>
+    <button onclick="filterByCategory('စျေးနှုန်း')" class="cat-btn">ရွှေ/ငွေစျေး</button>
+</div>
+
+<style>
+    .cat-btn {
+        background: white; border: 1px solid #3b82f6; color: #3b82f6;
+        padding: 8px 15px; border-radius: 20px; cursor: pointer; white-space: nowrap;
+    }
+    .cat-btn:hover, .cat-btn.active { background: #3b82f6; color: white; }
+</style>
     </section>
     <div class="section container">
         <input type="text" id="searchInput" placeholder="🔎 သတင်းရှာဖွေရန်..." class="search-input">
