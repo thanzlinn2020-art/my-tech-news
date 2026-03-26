@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>သတင်းတင်ရန် - Admin Panel</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f1f5f9; }
+        .form-box { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { color: #1e293b; text-align: center; }
+        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        button:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+
+<div class="form-box">
+    <h2>➕ သတင်းအသစ်တင်ရန်</h2>
+    <input type="text" id="title" placeholder="သတင်းခေါင်းစဉ်" required>
+    <textarea id="summary" placeholder="အကျဉ်းချုပ် (Summary)" rows="4" required></textarea>
+    <select id="reliability">
+        <option value="high">အလွန်ယုံကြည်ရ</option>
+        <option value="medium">ယုံကြည်ရ</option>
+        <option value="low">စစ်ဆေးရန်</option>
+    </select>
+    <button onclick="uploadNews()">သိမ်းဆည်းမည်</button>
+</div>
+
+<script>
+    // Supabase ချိတ်ဆက်မှု (ဒီနေရာမှာလည်း URL နဲ့ Key ထည့်ပေးပါ)
+    const SUPABASE_URL = 'သင်၏_PROJECT_URL';
+    const SUPABASE_KEY = 'သင်၏_ANON_KEY';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function uploadNews() {
+        const title = document.getElementById('title').value;
+        const summary = document.getElementById('summary').value;
+        const reliability = document.getElementById('reliability').value;
+
+        if(!title || !summary) {
+            alert("အချက်အလက် အားလုံးဖြည့်ပါ");
+            return;
+        }
+
+        const { data, error } = await _supabase
+            .from('news')
+            .insert([{ title, summary, reliability }]);
+
+        if (error) {
+            alert("အမှားအယွင်းရှိပါသည်: " + error.message);
+        } else {
+            alert("✅ သတင်းတင်ပြီးပါပြီ");
+            document.getElementById('title').value = '';
+            document.getElementById('summary').value = '';
+        }
+    }
+</script>
+
+</body>
+</html>
+
