@@ -1,6 +1,7 @@
 // script.js
-const SUPABASE_URL = 'သင်၏_PROJECT_URL';
-const SUPABASE_KEY = 'သင်၏_ANON_KEY';
+const SUPABASE_URL = '
+https://tlmzcasltbihfbnupguq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // သတင်းများကို Database မှ ဆွဲထုတ်သည့် Function
