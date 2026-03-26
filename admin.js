@@ -1,6 +1,6 @@
 // admin.js
 const SUPABASE_URL = 'https://tlmzcasltbihfbnupguq.supabase.co';
-const SUPABASE_ANON_KEY = 'သင်၏_ANON_KEY_ကို_ဒီမှာထည့်ပါ';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const ADMIN_PASSWORD = 'admin123'; 
