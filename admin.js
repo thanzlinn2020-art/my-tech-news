@@ -26,6 +26,14 @@ async function saveNews() {
         title: document.getElementById('title').value,
         summary: document.getElementById('summary').value,
         reliability: document.getElementById('reliability').value
+        // admin.js ထဲက saveNews function ကို ပြင်ရန်
+const newsData = {
+    title: document.getElementById('title').value,
+    summary: document.getElementById('summary').value,
+    reliability: document.getElementById('reliability').value,
+    category: document.getElementById('category').value // ဒီစာကြောင်း အသစ်ထည့်ပါ
+};
+
     };
 
     if (id) {
