@@ -6,25 +6,23 @@
     <title>Admin Panel</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:system-ui;background:#f5f5f5;padding:15px}
-        .container{max-width:1000px;margin:0 auto}
-        .header{background:#1e293b;color:white;padding:15px;border-radius:12px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
-        .header a{color:#3b82f6;background:white;padding:6px 12px;border-radius:8px;text-decoration:none}
-        .tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-        .tab{background:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold}
-        .tab.active{background:#3b82f6;color:white}
-        .panel{background:white;border-radius:12px;padding:20px;margin-bottom:20px}
-        .panel h2{margin-bottom:15px}
-        input,textarea,select{width:100%;padding:10px;margin:8px 0;border:1px solid #ddd;border-radius:8px}
-        button{padding:10px 20px;border:none;border-radius:8px;cursor:pointer;margin-right:10px}
-        .btn-primary{background:#3b82f6;color:white}
-        .btn-danger{background:#ef4444;color:white}
-        .btn-success{background:#10b981;color:white}
-        .btn-gray{background:#64748b;color:white}
+        body{font-family:system-ui;background:#f1f5f9;padding:20px}
+        .container{max-width:1200px;margin:0 auto}
+        .header{background:#0f172a;color:#fff;padding:20px;border-radius:16px;margin-bottom:30px;display:flex;justify-content:space-between;align-items:center}
+        .header a{color:#3b82f6;background:#fff;padding:8px16px;border-radius:8px;text-decoration:none}
+        .tabs{display:flex;gap:10px;margin-bottom:20px}
+        .tab{background:#fff;border:none;padding:12px24px;border-radius:12px;cursor:pointer;font-weight:600}
+        .tab.active{background:#3b82f6;color:#fff}
+        .panel{background:#fff;border-radius:16px;padding:25px;margin-bottom:20px}
+        input,textarea,select{width:100%;padding:12px;margin:10px 0;border:1px solid #cbd5e1;border-radius:8px}
+        button{padding:10px20px;border:none;border-radius:8px;cursor:pointer;font-weight:600;margin-right:10px}
+        .btn-primary{background:#3b82f6;color:#fff}
+        .btn-danger{background:#ef4444;color:#fff}
+        .btn-success{background:#10b981;color:#fff}
         table{width:100%;border-collapse:collapse}
-        th,td{padding:10px;text-align:left;border-bottom:1px solid #eee}
-        .loading{text-align:center;padding:20px;color:#3b82f6}
+        th,td{padding:12px;text-align:left;border-bottom:1px solid #e2e8f0}
         .hidden{display:none}
+        .loading{text-align:center;padding:20px;color:#3b82f6}
     </style>
 </head>
 <body>
@@ -40,9 +38,8 @@
         <button class="tab" onclick="showTab('list')">📋 News List</button>
     </div>
     
-    <!-- Add News Tab -->
     <div id="addPanel" class="panel">
-        <h2>➕ Add New News</h2>
+        <h2>Add New News</h2>
         <input type="text" id="title" placeholder="Title *">
         <textarea id="summary" rows="2" placeholder="Summary *"></textarea>
         <textarea id="content" rows="4" placeholder="Full Content"></textarea>
@@ -58,257 +55,109 @@
                 <option value="low">Low Reliability</option>
             </select>
         </div>
-        <button class="btn-primary" onclick="saveNews()">💾 Save News</button>
-        <button class="btn-gray" onclick="clearForm()">🗑️ Clear</button>
+        <button class="btn-primary" onclick="saveNews()">💾 Save</button>
+        <button onclick="clearForm()">Clear</button>
     </div>
     
-    <!-- Auto Import Tab -->
     <div id="importPanel" class="panel hidden">
-        <h2>🤖 Auto Import from URL</h2>
+        <h2>Auto Import</h2>
         <input type="url" id="newsUrl" placeholder="https://www.bbc.com/burmese/...">
-        <button class="btn-primary" onclick="fetchNews()">🔍 Fetch News</button>
-        <div id="fetchLoading" class="loading hidden">⏳ Fetching...</div>
+        <button class="btn-primary" onclick="fetchNews()">🔍 Fetch</button>
+        <div id="fetchLoading" class="loading hidden">Loading...</div>
         <div id="previewDiv" class="hidden" style="margin-top:20px;padding:15px;background:#f8fafc;border-radius:12px"></div>
     </div>
     
-    <!-- News List Tab -->
     <div id="listPanel" class="panel hidden">
-        <h2>📋 News List (<span id="totalCount">0</span>)</h2>
-        <div id="newsListContainer"><div class="loading">Loading...</div></div>
+        <h2>News List (<span id="totalCount">0</span>)</h2>
+        <div id="newsList"><div class="loading">Loading...</div></div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ============ CONFIG ============
 const SUPABASE_URL = 'https://tlmzcasltbihfbnupguq.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';  // ← PUT YOUR ANON KEY HERE
-
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let fetchedData = null;
 
-// ============ TAB ============
-function showTab(tab) {
+function showTab(tab){
     document.getElementById('addPanel').classList.add('hidden');
     document.getElementById('importPanel').classList.add('hidden');
     document.getElementById('listPanel').classList.add('hidden');
-    document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
-    
-    if (tab === 'add') {
-        document.getElementById('addPanel').classList.remove('hidden');
-        document.querySelectorAll('.tab')[0].classList.add('active');
-    } else if (tab === 'import') {
-        document.getElementById('importPanel').classList.remove('hidden');
-        document.querySelectorAll('.tab')[1].classList.add('active');
-    } else if (tab === 'list') {
-        document.getElementById('listPanel').classList.remove('hidden');
-        document.querySelectorAll('.tab')[2].classList.add('active');
-        loadNewsList();
-    }
+    document.querySelectorAll('.tab').forEach(btn=>btn.classList.remove('active'));
+    if(tab==='add'){document.getElementById('addPanel').classList.remove('hidden');document.querySelectorAll('.tab')[0].classList.add('active');}
+    if(tab==='import'){document.getElementById('importPanel').classList.remove('hidden');document.querySelectorAll('.tab')[1].classList.add('active');}
+    if(tab==='list'){document.getElementById('listPanel').classList.remove('hidden');document.querySelectorAll('.tab')[2].classList.add('active');loadList();}
 }
 
-// ============ SAVE NEWS ============
-async function saveNews() {
-    const title = document.getElementById('title').value.trim();
-    const summary = document.getElementById('summary').value.trim();
-    
-    if (!title || !summary) {
-        alert('Please enter Title and Summary');
-        return;
-    }
-    
-    const data = {
-        title: title,
-        summary: summary,
-        content: document.getElementById('content').value.trim() || summary,
-        category: document.getElementById('category').value.trim() || 'Technology',
-        image_url: document.getElementById('image_url').value.trim(),
-        source: document.getElementById('source').value.trim() || 'Myanmar Tech News',
-        reliability: document.getElementById('reliability').value
-    };
-    
-    const { error } = await supabase.from('news').insert([data]);
-    
-    if (error) {
-        alert('Error: ' + error.message);
-    } else {
-        alert('✅ News saved successfully!');
-        clearForm();
-        loadNewsList();
-    }
+async function saveNews(){
+    let title=document.getElementById('title').value.trim();
+    let summary=document.getElementById('summary').value.trim();
+    if(!title||!summary){alert('Title and Summary required');return;}
+    let data={title,summary,content:document.getElementById('content').value.trim()||summary,category:document.getElementById('category').value.trim()||'Tech',image_url:document.getElementById('image_url').value.trim(),source:document.getElementById('source').value.trim()||'Myanmar Tech',reliability:document.getElementById('reliability').value};
+    let {error}=await supabase.from('news').insert([data]);
+    if(error)alert('Error: '+error.message);
+    else{alert('Saved!');clearForm();loadList();}
 }
 
-function clearForm() {
-    document.getElementById('title').value = '';
-    document.getElementById('summary').value = '';
-    document.getElementById('content').value = '';
-    document.getElementById('category').value = '';
-    document.getElementById('source').value = '';
-    document.getElementById('image_url').value = '';
-    document.getElementById('reliability').value = 'medium';
+function clearForm(){
+    document.getElementById('title').value='';document.getElementById('summary').value='';document.getElementById('content').value='';
+    document.getElementById('category').value='';document.getElementById('source').value='';document.getElementById('image_url').value='';
+    document.getElementById('reliability').value='medium';
 }
 
-// ============ FETCH NEWS ============
-async function fetchNews() {
-    const url = document.getElementById('newsUrl').value.trim();
-    if (!url) {
-        alert('Please enter a URL');
-        return;
-    }
-    
+async function fetchNews(){
+    let url=document.getElementById('newsUrl').value.trim();
+    if(!url){alert('Enter URL');return;}
     document.getElementById('fetchLoading').classList.remove('hidden');
     document.getElementById('previewDiv').classList.add('hidden');
-    
-    try {
-        const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
-        const response = await fetch(proxyUrl);
-        const data = await response.json();
-        
-        if (!data.contents) throw new Error('No content');
-        
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(data.contents, 'text/html');
-        
-        // Get title
-        let title = doc.querySelector('meta[property="og:title"]')?.content;
-        if (!title) title = doc.querySelector('title')?.innerText;
-        if (!title) title = 'No title found';
-        
-        // Get description
-        let description = doc.querySelector('meta[property="og:description"]')?.content;
-        if (!description) description = doc.querySelector('meta[name="description"]')?.content;
-        if (!description) description = 'No description found';
-        
-        // Get image
-        let image = doc.querySelector('meta[property="og:image"]')?.content || '';
-        
-        // Get source
-        let source = new URL(url).hostname.replace('www.', '');
-        
-        // Detect category
-        let category = 'Technology';
-        const text = (title + ' ' + description).toLowerCase();
-        if (text.includes('5g')) category = '5G';
-        else if (text.includes('ai')) category = 'AI';
-        else if (text.includes('mobile')) category = 'Mobile';
-        
-        fetchedData = {
-            title: title.slice(0, 200),
-            summary: description.slice(0, 300),
-            content: '',
-            image_url: image,
-            source: source,
-            category: category,
-            reliability: 'medium'
-        };
-        
-        // Show preview
-        document.getElementById('previewDiv').innerHTML = `
-            <h3 style="margin-bottom:10px">📋 Preview</h3>
-            <p><strong>Title:</strong> ${escapeHtml(fetchedData.title)}</p>
-            <p><strong>Summary:</strong> ${escapeHtml(fetchedData.summary)}</p>
-            <p><strong>Category:</strong> ${fetchedData.category}</p>
-            <p><strong>Source:</strong> ${fetchedData.source}</p>
-            ${fetchedData.image_url ? `<img src="${fetchedData.image_url}" style="max-width:100%; max-height:150px; border-radius:8px; margin:10px 0;">` : '<p>No image</p>'}
-            <button class="btn-success" onclick="importNews()" style="margin-top:10px">📥 Import to Database</button>
-            <button class="btn-gray" onclick="clearPreview()" style="margin-top:10px">🗑️ Cancel</button>
-        `;
+    try{
+        let res=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent(url));
+        let data=await res.json();
+        let doc=new DOMParser().parseFromString(data.contents,'text/html');
+        let title=doc.querySelector('meta[property="og:title"]')?.content||doc.querySelector('title')?.innerText||'No title';
+        let desc=doc.querySelector('meta[property="og:description"]')?.content||doc.querySelector('meta[name="description"]')?.content||'No description';
+        let img=doc.querySelector('meta[property="og:image"]')?.content||'';
+        let source=new URL(url).hostname.replace('www.','');
+        let cat='Tech';
+        let txt=(title+desc).toLowerCase();
+        if(txt.includes('5g'))cat='5G';
+        else if(txt.includes('ai'))cat='AI';
+        else if(txt.includes('mobile'))cat='Mobile';
+        fetchedData={title:title.slice(0,200),summary:desc.slice(0,300),image_url:img,source,category:cat,reliability:'medium'};
+        document.getElementById('previewDiv').innerHTML=`<strong>Title:</strong> ${title}<br><strong>Summary:</strong> ${desc}<br><strong>Category:</strong> ${cat}<br><strong>Source:</strong> ${source}${img?`<br><img src="${img}" style="max-width:100%;max-height:150px;margin-top:10px">`:''}<br><br><button class="btn-success" onclick="importNews()">Import</button>`;
         document.getElementById('previewDiv').classList.remove('hidden');
-        
-    } catch (err) {
-        alert('Failed to fetch news: ' + err.message);
-    } finally {
-        document.getElementById('fetchLoading').classList.add('hidden');
-    }
+    }catch(e){alert('Failed');}
+    finally{document.getElementById('fetchLoading').classList.add('hidden');}
 }
 
-async function importNews() {
-    if (!fetchedData) {
-        alert('No data to import');
-        return;
-    }
-    
-    const { error } = await supabase.from('news').insert([{
-        title: fetchedData.title,
-        summary: fetchedData.summary,
-        content: fetchedData.summary,
-        category: fetchedData.category,
-        image_url: fetchedData.image_url,
-        source: fetchedData.source,
-        reliability: fetchedData.reliability
-    }]);
-    
-    if (error) {
-        alert('Error: ' + error.message);
-    } else {
-        alert('✅ News imported successfully!');
-        clearPreview();
-        document.getElementById('newsUrl').value = '';
-        loadNewsList();
-    }
+async function importNews(){
+    if(!fetchedData){alert('No data');return;}
+    let {error}=await supabase.from('news').insert([{title:fetchedData.title,summary:fetchedData.summary,content:fetchedData.summary,category:fetchedData.category,image_url:fetchedData.image_url,source:fetchedData.source,reliability:fetchedData.reliability}]);
+    if(error)alert('Error: '+error.message);
+    else{alert('Imported!');document.getElementById('previewDiv').classList.add('hidden');document.getElementById('newsUrl').value='';fetchedData=null;loadList();}
 }
 
-function clearPreview() {
-    document.getElementById('previewDiv').classList.add('hidden');
-    fetchedData = null;
+async function loadList(){
+    let {data}=await supabase.from('news').select('*').order('created_at',{ascending:false});
+    document.getElementById('totalCount').innerText=data?.length||0;
+    if(!data||data.length===0){document.getElementById('newsList').innerHTML='<div class="loading">No news</div>';return;}
+    let html='<table><thead><tr><th>ID</th><th>Title</th><th>Category</th><th></th></tr></thead><tbody>';
+    data.forEach(n=>{html+=`<tr><td>${n.id}</td><td>${escapeHtml(n.title)}</td><td>${escapeHtml(n.category||'-')}</td><td><button onclick="deleteNews(${n.id})" style="background:#ef4444;color:#fff;border:none;padding:5px10px;border-radius:5px">Delete</button></td></tr>`;});
+    html+='</tbody></table>';
+    document.getElementById('newsList').innerHTML=html;
 }
 
-// ============ NEWS LIST ============
-async function loadNewsList() {
-    const { data, error } = await supabase
-        .from('news')
-        .select('*')
-        .order('created_at', { ascending: false });
-    
-    if (error) {
-        document.getElementById('newsListContainer').innerHTML = '<div class="loading">Error loading news</div>';
-        return;
-    }
-    
-    document.getElementById('totalCount').innerText = data.length;
-    
-    if (data.length === 0) {
-        document.getElementById('newsListContainer').innerHTML = '<div class="loading">📭 No news yet</div>';
-        return;
-    }
-    
-    let html = ' 表 <thead> <tr><th>ID</th><th>Title</th><th>Category</th><th>Action</th></tr> </thead> <tbody>';
-    for (const news of data) {
-        html += `
-            <tr>
-                <td>${news.id}</td>
-                <td>${escapeHtml(news.title)}</td>
-                <td>${escapeHtml(news.category || '-')}</td>
-                <td><button class="btn-danger" onclick="deleteNews(${news.id})" style="padding:5px 10px;">Delete</button></td>
-            </tr>
-        `;
-    }
-    html += '</tbody> ⁣';
-    document.getElementById('newsListContainer').innerHTML = html;
+async function deleteNews(id){
+    if(!confirm('Delete?'))return;
+    let {error}=await supabase.from('news').delete().eq('id',id);
+    if(error)alert('Error');
+    else{alert('Deleted');loadList();}
 }
 
-async function deleteNews(id) {
-    if (!confirm('Are you sure you want to delete this news?')) return;
-    
-    const { error } = await supabase.from('news').delete().eq('id', id);
-    
-    if (error) {
-        alert('Error: ' + error.message);
-    } else {
-        alert('🗑️ News deleted!');
-        loadNewsList();
-    }
-}
+function escapeHtml(t){if(!t)return '';let d=document.createElement('div');d.textContent=t;return d.innerHTML;}
 
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-// ============ INIT ============
-loadNewsList();
+loadList();
 </script>
 </body>
 </html>
