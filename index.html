@@ -3,289 +3,472 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>မြန်မာနည်းပညာသတင်း</title>
+    <title>Admin Panel - မြန်မာနည်းပညာသတင်း</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Noto Sans Myanmar', sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%); }
-        .container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
-        .navbar { background: #0f172a; color: white; padding: 1rem 0; position: fixed; width: 100%; top: 0; z-index: 1000; }
-        .navbar .container { display: flex; justify-content: space-between; align-items: center; }
-        .nav-brand h1 { font-size: 1.2rem; }
-        .nav-menu { display: flex; list-style: none; gap: 1.5rem; }
-        .nav-menu a { color: white; text-decoration: none; }
-        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
-        .hamburger span { width: 25px; height: 3px; background: white; border-radius: 3px; }
-        .hero { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #3b82f6 100%); color: white; padding: 120px 0 80px; text-align: center; margin-top: 60px; }
-        .hero h1 { font-size: 1.8rem; margin-bottom: 1rem; }
-        .btn-primary { display: inline-block; background: #3b82f6; color: white; padding: 12px 32px; border-radius: 50px; text-decoration: none; font-weight: 600; }
-        .section { padding: 60px 0; }
-        .section-title { text-align: center; font-size: 1.8rem; margin-bottom: 2rem; color: #0f172a; }
-        .bg-light { background: #f8fafc; }
-        .search-input { width: 100%; padding: 14px 20px; border: 2px solid #e2e8f0; border-radius: 50px; font-size: 1rem; margin-bottom: 2rem; }
-        .results-grid, .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; }
-        .result-card, .news-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.3s; }
-        .result-card:hover, .news-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
-        .news-card { border-left: 4px solid #3b82f6; }
-        .news-badge { display: inline-block; background: #3b82f6; color: white; padding: 4px 12px; border-radius: 50px; font-size: 0.7rem; margin-bottom: 0.75rem; }
-        .result-card h3 a, .news-card h3 a { color: #0f172a; text-decoration: none; }
-        .snippet, .news-summary { color: #475569; margin: 0.75rem 0; }
-        .read-more { color: #3b82f6; text-decoration: none; }
-        .result-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; }
-        .reliability-badge { padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; }
-        .reliability-badge.high { background: #dbeafe; color: #1e40af; }
-        .reliability-badge.medium { background: #fef3c7; color: #b45309; }
-        .save-btn { background: none; border: none; cursor: pointer; color: #3b82f6; padding: 4px 12px; border-radius: 50px; }
-        .about-content { max-width: 800px; margin: 0 auto; text-align: center; background: white; padding: 2rem; border-radius: 16px; }
-        .features { display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; flex-wrap: wrap; }
-        .footer { background: #0f172a; color: white; padding: 3rem 0 1.5rem; margin-top: 2rem; }
-        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
-        .footer-bottom { text-align: center; padding-top: 1.5rem; border-top: 1px solid #334155; color: #94a3b8; }
-        .loading { text-align: center; padding: 2rem; color: #3b82f6; }
-        .back-to-top { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; background: #3b82f6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s; }
-        .back-to-top.show { opacity: 1; visibility: visible; }
-        @media (max-width: 768px) {
-            .hamburger { display: flex; }
-            .nav-menu { position: fixed; left: -100%; top: 70px; flex-direction: column; background: #0f172a; width: 100%; text-align: center; transition: 0.3s; padding: 2rem 0; }
-            .nav-menu.active { left: 0; }
-            .hero h1 { font-size: 1.5rem; }
-            .results-grid, .news-grid { grid-template-columns: 1fr; }
-        }
+        body { font-family: 'Noto Sans Myanmar', sans-serif; background: #f1f5f9; padding: 20px; }
+        .admin-container { max-width: 1400px; margin: 0 auto; }
+        .admin-header { background: #0f172a; color: white; padding: 20px; border-radius: 16px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .admin-header h1 { font-size: 1.5rem; }
+        .back-link { color: #3b82f6; text-decoration: none; background: white; padding: 8px 16px; border-radius: 8px; }
+        .logout-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+        .tab-btn { padding: 12px 24px; background: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .tab-btn.active { background: #3b82f6; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .news-form, .auto-import-form { background: white; padding: 25px; border-radius: 16px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #334155; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-warning { background: #f59e0b; color: white; }
+        .btn-secondary { background: #64748b; color: white; }
+        .news-list { background: white; padding: 25px; border-radius: 16px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f8fafc; }
+        .message { padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; display: none; }
+        .message.success { background: #d1fae5; color: #065f46; }
+        .message.error { background: #fee2e2; color: #991b1b; }
+        .loading { text-align: center; padding: 20px; color: #3b82f6; }
+        .preview-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-top: 15px; }
+        .preview-card img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
+        @media (max-width: 768px) { .form-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand"><h1>🇲🇲 မြန်မာနည်းပညာသတင်း</h1></div>
-            <ul class="nav-menu">
-                <li><a href="#home">🏠 ပင်မ</a></li>
-                <li><a href="#search">🔍 ရှာဖွေမှု</a></li>
-                <li><a href="#news">📰 သတင်းများ</a></li>
-                <li><a href="#about">📖 အကြောင်း</a></li>
-                <li><a href="admin.html">👑 Admin</a></li>
-            </ul>
-            <div class="hamburger"><span></span><span></span><span></span></div>
-        </div>
-    </nav>
-    
-    <section id="home" class="hero">
-        <div class="container">
-            <h1>✨ မြန်မာနိုင်ငံရဲ့ နည်းပညာသတင်းများ ✨</h1>
-            <p>5G၊ AI၊ အင်တာနက်နှင့် ခေတ်မီနည်းပညာများအကြောင်း နောက်ဆုံးရသတင်းများ</p>
-            <a href="#search" class="btn-primary">🚀 စတင်ရှာဖွေရန် 🚀</a>
-        </div>
-    </section>
-    
-    <section id="search" class="section">
-        <div class="container">
-            <h2 class="section-title">🔍 ရှာဖွေမှုရလဒ်များ</h2>
-            <input type="text" id="searchInput" placeholder="🔎 သတင်းများကို ရှာဖွေရန်..." class="search-input">
-            <div class="results-grid" id="searchResults">
-                <div class="loading">📡 သတင်းများ ဖတ်ရှုနေပါသည်...</div>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>👑 Admin Panel - သတင်းစီမံခန့်ခွဲမှု</h1>
+            <div>
+                <span id="userEmail" style="margin-right:15px;"></span>
+                <button class="logout-btn" onclick="adminLogout()">🚪 ထွက်ရန်</button>
+                <a href="index.html" class="back-link">🏠 Frontend</a>
             </div>
         </div>
-    </section>
-    
-    <section id="news" class="section bg-light">
-        <div class="container">
-            <h2 class="section-title">📰 နောက်ဆုံးရ သတင်းများ</h2>
-            <div class="news-grid" id="latestNews">
-                <div class="loading">📡 သတင်းများ ဖတ်ရှုနေပါသည်...</div>
-            </div>
+        
+        <div id="messageBox" class="message"></div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('manual')">✍️ လက်ဖြင့်ထည့်ရန်</button>
+            <button class="tab-btn" onclick="switchTab('auto')">🤖 Auto Import</button>
+            <button class="tab-btn" onclick="switchTab('list')">📋 သတင်းစာရင်း</button>
         </div>
-    </section>
-    
-    <section id="about" class="section">
-        <div class="container">
-            <h2 class="section-title">📖 အကြောင်း</h2>
-            <div class="about-content">
-                <p><strong>မြန်မာနည်းပညာသတင်း</strong> သည် မြန်မာနိုင်ငံရှိ နည်းပညာဝါသနာရှင်များအတွက် နောက်ဆုံးရ နည်းပညာသတင်းများကို ဖော်ပြပေးနေသော ဝက်ဘ်ဆိုဒ်ဖြစ်ပါသည်။</p>
-                <div class="features">
-                    <div class="feature"><span>🚀</span><span>ခေတ်မီနည်းပညာ</span></div>
-                    <div class="feature"><span>🔍</span><span>အချိန်နှင့်တပြေးညီ</span></div>
-                    <div class="feature"><span>📱</span><span>မိုဘိုင်း အဆင်ပြေ</span></div>
+        
+        <div id="manualTab" class="tab-content active">
+            <div class="news-form">
+                <h2>➕ သတင်းအသစ်ထည့်ရန်</h2>
+                <input type="hidden" id="newsId">
+                <div class="form-group"><label>📰 ခေါင်းစဉ် *</label><input type="text" id="title" placeholder="သတင်းခေါင်းစဉ်"></div>
+                <div class="form-group"><label>📝 အကျဉ်းချုပ် *</label><textarea id="summary" rows="2" placeholder="သတင်းအကျဉ်းချုပ်"></textarea></div>
+                <div class="form-group"><label>📄 အပြည့်အစုံ</label><textarea id="content" rows="4" placeholder="သတင်းအပြည့်အစုံ"></textarea></div>
+                <div class="form-row">
+                    <div class="form-group"><label>🏷️ အမျိုးအစား</label><input type="text" id="category" placeholder="AI, 5G, Mobile"></div>
+                    <div class="form-group"><label>🔗 ရင်းမြစ်</label><input type="text" id="source" placeholder="BBC, VOA"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>🖼️ ပုံလင့်ခ်</label><input type="text" id="image_url" placeholder="https://..."></div>
+                    <div class="form-group"><label>⭐ ယုံကြည်ရမှု</label>
+                        <select id="reliability"><option value="high">အလွန်ယုံကြည်ရ</option><option value="medium" selected>ယုံကြည်ရ</option><option value="low">စစ်ဆေးရန်</option></select>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="saveNews()">💾 သိမ်းမည်</button>
+                    <button class="btn btn-secondary" onclick="clearForm()">🗑️ ပယ်ဖျက်မည်</button>
                 </div>
             </div>
         </div>
-    </section>
-    
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section"><h3>🇲🇲 မြန်မာနည်းပညာသတင်း</h3><p>မြန်မာနိုင်ငံရဲ့ နံပါတ် ၁ နည်းပညာသတင်းဌာန</p></div>
-                <div class="footer-section"><h3>🔗 လင့်ခ်များ</h3><ul style="list-style:none;"><li><a href="#home">ပင်မ</a></li><li><a href="#search">ရှာဖွေမှု</a></li><li><a href="#news">သတင်းများ</a></li><li><a href="admin.html">Admin Panel</a></li></ul></div>
-                <div class="footer-section"><h3>⏰ အချိန်</h3><p id="currentTime"></p></div>
+        
+        <div id="autoTab" class="tab-content">
+            <div class="auto-import-form">
+                <h2>🤖 Auto Import - Link ထည့်ရုံသာ</h2>
+                <div class="form-group"><label>🔗 သတင်းလင့်ခ် (URL)</label><input type="url" id="newsUrl" placeholder="https://www.bbc.com/burmese/..."></div>
+                <button class="btn btn-primary" onclick="fetchNews()">🔍 သတင်းယူမည်</button>
+                <div id="loadingMsg" style="display:none;" class="loading">⏳ ယူနေပါသည်...</div>
+                <div id="previewArea" style="display:none; margin-top:20px;">
+                    <h3>📋 ယူထားတဲ့ အချက်အလက်</h3>
+                    <div id="previewContent" class="preview-card"></div>
+                    <button class="btn btn-success" onclick="importNews()" style="margin-top:10px;">📥 Supabase ထဲသိမ်းမည်</button>
+                    <button class="btn btn-secondary" onclick="clearPreview()">🗑️ ပယ်ဖျက်မည်</button>
+                </div>
             </div>
-            <div class="footer-bottom"><p>&copy; 2025 မြန်မာနည်းပညာသတင်း | Powered by Supabase</p></div>
         </div>
-    </footer>
-    <div class="back-to-top" onclick="scrollToTop()">↑</div>
+        
+        <div id="listTab" class="tab-content">
+            <div class="news-list">
+                <h2>📰 သတင်းစာရင်း (စုစုပေါင်း: <span id="totalCount">0</span>)</h2>
+                <div id="newsTableContainer"><div class="loading">📡 သတင်းများ ဖတ်နေပါသည်...</div></div>
+            </div>
+        </div>
+    </div>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        (function() {
-            // ============ SUPABASE CONFIGURATION ============
-            const MY_SUPABASE_URL = 'https://tlmzcasltbihfbnupguq.supabase.co';
-            const MY_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';
-            
-            const supabaseClient = window.supabase.createClient(MY_SUPABASE_URL, MY_SUPABASE_ANON_KEY);
-            
-            const fallbackNews = [
-                { id: 1, title: "📶 5G ကွန်ရက် စတင်အသုံးပြုနိုင်ပြီ", summary: "မြန်မာနိုင်ငံတွင် 5G ကွန်ရက်ကို စတင်အသုံးပြုနိုင်ပြီဖြစ်ပါသည်။", category: "5G", source: "Myanmar Tech News", reliability: "high" },
-                { id: 2, title: "🤖 AI နည်းပညာ ဖွံ့ဖြိုးလာ", summary: "Artificial Intelligence နည်းပညာဖြင့် မြန်မာစာ ဘာသာပြန်စနစ်များ တိုးတက်လာ", category: "AI", source: "Myanmar Tech News", reliability: "high" }
-            ];
-            
-            async function loadNews() {
-                console.log('Loading news from Supabase...');
-                try {
-                    const { data, error } = await supabaseClient
-                        .from('news')
-                        .select('*')
-                        .order('created_at', { ascending: false });
-                    
-                    if (error) throw error;
-                    
-                    if (data && data.length > 0) {
-                        renderAllNews(data);
-                    } else {
-                        renderAllNews(fallbackNews);
-                    }
-                } catch (err) {
-                    console.error('Error:', err);
-                    renderAllNews(fallbackNews);
-                }
-            }
-            
-            function renderAllNews(newsArray) {
-    // Search results
-    const searchContainer = document.getElementById('searchResults');
-    if (searchContainer) {
-        if (newsArray.length === 0) {
-            searchContainer.innerHTML = '<div style="text-align:center; padding:2rem;">📭 သတင်းမရှိသေးပါ</div>';
-        } else {
-            searchContainer.innerHTML = newsArray.map(n => `
-                <div class="result-card">
-                    ${n.image_url ? `<img src="${escapeHtml(n.image_url)}" style="width:100%; height:180px; object-fit:cover; border-radius:12px; margin-bottom:15px;" onerror="this.style.display='none'">` : ''}
-                    <h3><a href="news-detail.html?id=${n.id}" style="text-decoration:none; color:#0f172a;">${escapeHtml(n.title)}</a></h3>
-                    <p class="snippet">${escapeHtml(n.summary)}</p>
-                    <div class="result-footer">
-                        <span class="reliability-badge ${n.reliability || 'medium'}">${getReliabilityText(n.reliability)}</span>
-                        <button class="save-btn" onclick="saveFavorite(${n.id}, '${escapeHtml(n.title)}')">⭐ မှတ်သားရန်</button>
-                    </div>
-                </div>
-            `).join('');
+        // ============ SUPABASE CONFIGURATION ============
+        const SUPABASE_URL = 'https://tlmzcasltbihfbnupguq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';  // ← ကိုယ့် anon key ထည့်ပါ
+        
+        let supabaseClient = null;
+        let currentUser = null;
+        let importedData = null;
+        
+        // ============ SHOW MESSAGE ============
+        function showMessage(msg, type) {
+            const msgBox = document.getElementById('messageBox');
+            if (!msgBox) return;
+            msgBox.textContent = msg;
+            msgBox.className = `message ${type}`;
+            msgBox.style.display = 'block';
+            setTimeout(() => {
+                msgBox.style.display = 'none';
+            }, 4000);
         }
-    }
-    
-    // Latest news
-    const latestContainer = document.getElementById('latestNews');
-    if (latestContainer) {
-        const latestNews = newsArray.slice(0, 3);
-        if (latestNews.length === 0) {
-            latestContainer.innerHTML = '<div style="text-align:center; padding:2rem;">📭 သတင်းမရှိသေးပါ</div>';
-        } else {
-            latestContainer.innerHTML = latestNews.map(n => `
-                <div class="news-card">
-                    ${n.image_url ? `<img src="${escapeHtml(n.image_url)}" style="width:100%; height:160px; object-fit:cover; border-radius:12px; margin-bottom:15px;" onerror="this.style.display='none'">` : ''}
-                    <div class="news-badge">📡 ${escapeHtml(n.source || 'Myanmar Tech News')}</div>
-                    <h3><a href="news-detail.html?id=${n.id}" style="text-decoration:none; color:#0f172a;">${escapeHtml(n.title)}</a></h3>
-                    <p class="news-summary">${escapeHtml(n.summary)}</p>
-                    <a href="news-detail.html?id=${n.id}" class="read-more">ဆက်ဖတ်ရန် →</a>
-                </div>
-            `).join('');
-        }
-    }
-}
-            
-            function getReliabilityText(level) {
-                if (level === 'high') return '✅ အလွန်ယုံကြည်ရ';
-                if (level === 'medium') return '📊 ယုံကြည်ရ';
-                return '⚠️ စစ်ဆေးရန်';
-            }
-            
-            function escapeHtml(text) {
-                if (!text) return '';
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
-            
-            window.saveFavorite = function(id, title) {
-                let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-                if (!favorites.some(f => f.id === id)) {
-                    favorites.push({ id, title, time: new Date().toISOString() });
-                    localStorage.setItem('favorites', JSON.stringify(favorites));
-                    alert('✓ မှတ်သားပြီးပါပြီ');
-                } else {
-                    alert('ဤသတင်းကို မှတ်သားထားပြီးဖြစ်ပါသည်');
+        
+        // ============ AUTHENTICATION ============
+        async function checkAdminAuth() {
+            try {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                
+                if (error || !session) {
+                    showLoginForm();
+                    return false;
                 }
+                
+                currentUser = session.user;
+                document.getElementById('userEmail').innerHTML = `👤 ${currentUser.email}`;
+                
+                if (currentUser.email !== 'admin@mytechnews.com') {
+                    showMessage('သင်သည် Admin မဟုတ်ပါ။ ဝင်ခွင့်မရှိပါ။', 'error');
+                    document.querySelector('.admin-container').innerHTML = `
+                        <div style="text-align:center; padding:50px;">
+                            <h1>⛔ ဝင်ခွင့်မရှိပါ</h1>
+                            <p>Admin အကောင့်ဖြင့်သာ ဝင်ရောက်နိုင်ပါသည်။</p>
+                            <a href="index.html" style="color:#3b82f6;">🏠 ပင်မစာမျက်နှာသို့</a>
+                        </div>
+                    `;
+                    return false;
+                }
+                
+                return true;
+                
+            } catch (err) {
+                console.error('Auth error:', err);
+                showLoginForm();
+                return false;
+            }
+        }
+        
+        function showLoginForm() {
+            const loginHtml = `
+                <div style="max-width:400px; margin:100px auto; background:white; padding:35px; border-radius:20px; box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+                    <h2 style="margin-bottom:20px;">🔐 Admin Login</h2>
+                    <p style="color:#64748b; margin-bottom:20px;">Admin အကောင့်ဖြင့်သာ ဝင်ရောက်နိုင်ပါသည်။</p>
+                    <input type="email" id="loginEmail" placeholder="admin@mytechnews.com" style="width:100%; padding:12px; margin:10px 0; border:1px solid #cbd5e1; border-radius:10px; font-size:16px;">
+                    <input type="password" id="loginPassword" placeholder="စကားဝှက်" style="width:100%; padding:12px; margin:10px 0; border:1px solid #cbd5e1; border-radius:10px; font-size:16px;">
+                    <button onclick="adminLogin()" style="width:100%; padding:12px; background:#3b82f6; color:white; border:none; border-radius:10px; font-size:16px; font-weight:600; cursor:pointer; margin-top:10px;">Login</button>
+                    <p style="margin-top:20px; font-size:12px; color:#94a3b8; text-align:center;">Supabase Dashboard တွင် အကောင့်ဖန်တီးပါ။</p>
+                </div>
+            `;
+            document.body.innerHTML = loginHtml;
+        }
+        
+        window.adminLogin = async function() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('Email နှင့် စကားဝှက် ထည့်ပါ');
+                return;
+            }
+            
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    alert('Login မအောင်မြင်ပါ: ' + error.message);
+                    return;
+                }
+                
+                if (data.user.email !== 'admin@mytechnews.com') {
+                    alert('သင်သည် Admin မဟုတ်ပါ။');
+                    await supabaseClient.auth.signOut();
+                    return;
+                }
+                
+                location.reload();
+                
+            } catch (err) {
+                alert('Login error: ' + err.message);
+            }
+        };
+        
+        window.adminLogout = async function() {
+            await supabaseClient.auth.signOut();
+            location.reload();
+        };
+        
+        // ============ TAB SWITCHING ============
+        window.switchTab = function(tab) {
+            document.getElementById('manualTab').classList.remove('active');
+            document.getElementById('autoTab').classList.remove('active');
+            document.getElementById('listTab').classList.remove('active');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            if (tab === 'manual') {
+                document.getElementById('manualTab').classList.add('active');
+                event.target.classList.add('active');
+            } else if (tab === 'auto') {
+                document.getElementById('autoTab').classList.add('active');
+                event.target.classList.add('active');
+            } else if (tab === 'list') {
+                document.getElementById('listTab').classList.add('active');
+                event.target.classList.add('active');
+                loadNewsList();
+            }
+        };
+        
+        // ============ SAVE NEWS ============
+        window.saveNews = async function() {
+            const title = document.getElementById('title').value.trim();
+            const summary = document.getElementById('summary').value.trim();
+            
+            if (!title || !summary) {
+                showMessage('ခေါင်းစဉ်နဲ့ အကျဉ်းချုပ် ထည့်ပါ', 'error');
+                return;
+            }
+            
+            const newsData = {
+                title: title,
+                summary: summary,
+                content: document.getElementById('content').value.trim() || summary,
+                category: document.getElementById('category').value.trim() || 'Technology',
+                image_url: document.getElementById('image_url').value.trim(),
+                source: document.getElementById('source').value.trim() || 'Myanmar Tech News',
+                reliability: document.getElementById('reliability').value
             };
             
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.addEventListener('input', async function(e) {
-                    const term = e.target.value.toLowerCase().trim();
-                    if (!term) {
-                        loadNews();
-                        return;
-                    }
-                    try {
-                        const { data, error } = await supabaseClient
-                            .from('news')
-                            .select('*')
-                            .ilike('title', `%${term}%`);
-                        if (error || !data || data.length === 0) {
-                            const filtered = fallbackNews.filter(n => n.title.toLowerCase().includes(term));
-                            renderAllNews(filtered);
-                        } else {
-                            renderAllNews(data);
-                        }
-                    } catch(err) {
-                        const filtered = fallbackNews.filter(n => n.title.toLowerCase().includes(term));
-                        renderAllNews(filtered);
-                    }
-                });
+            try {
+                const { error } = await supabaseClient
+                    .from('news')
+                    .insert([newsData]);
+                
+                if (error) throw error;
+                
+                showMessage('✅ သတင်းအောင်မြင်စွာ သိမ်းပြီးပါပြီ', 'success');
+                clearForm();
+                loadNewsList();
+                
+            } catch (err) {
+                console.error('Save error:', err);
+                showMessage('❌ သိမ်းရာတွင် အမှား: ' + err.message, 'error');
+            }
+        };
+        
+        window.clearForm = function() {
+            document.getElementById('newsId').value = '';
+            document.getElementById('title').value = '';
+            document.getElementById('summary').value = '';
+            document.getElementById('content').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('image_url').value = '';
+            document.getElementById('source').value = '';
+            document.getElementById('reliability').value = 'medium';
+        };
+        
+        // ============ FETCH NEWS ============
+        window.fetchNews = async function() {
+            const url = document.getElementById('newsUrl').value.trim();
+            
+            if (!url) {
+                showMessage('သတင်းလင့်ခ် ထည့်ပါ', 'error');
+                return;
             }
             
-            const hamburger = document.querySelector('.hamburger');
-            const navMenu = document.querySelector('.nav-menu');
-            if (hamburger) {
-                hamburger.addEventListener('click', () => navMenu.classList.toggle('active'));
-                document.querySelectorAll('.nav-menu a').forEach(link => {
-                    link.addEventListener('click', () => navMenu.classList.remove('active'));
-                });
+            document.getElementById('loadingMsg').style.display = 'block';
+            document.getElementById('previewArea').style.display = 'none';
+            
+            try {
+                // Use direct fetch with proxy
+                const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+                const response = await fetch(proxyUrl);
+                const data = await response.json();
+                
+                if (!data.contents) throw new Error('No content');
+                
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data.contents, 'text/html');
+                
+                let title = doc.querySelector('meta[property="og:title"]')?.getAttribute('content');
+                if (!title) title = doc.querySelector('title')?.innerText;
+                if (!title) title = 'ခေါင်းစဉ်မရှိပါ';
+                
+                let description = doc.querySelector('meta[property="og:description"]')?.getAttribute('content');
+                if (!description) description = doc.querySelector('meta[name="description"]')?.getAttribute('content');
+                if (!description) description = 'အကျဉ်းချုပ် မရှိပါ';
+                
+                let image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
+                let source = new URL(url).hostname.replace('www.', '');
+                
+                let category = 'Technology';
+                const fullText = (title + ' ' + description).toLowerCase();
+                if (fullText.includes('5g')) category = '5G';
+                else if (fullText.includes('ai')) category = 'AI';
+                else if (fullText.includes('mobile')) category = 'Mobile';
+                
+                importedData = {
+                    title: title.substring(0, 200),
+                    summary: description.substring(0, 300),
+                    content: '',
+                    image_url: image,
+                    source: source,
+                    category: category,
+                    reliability: 'medium'
+                };
+                
+                document.getElementById('previewContent').innerHTML = `
+                    <p><strong>📰 ခေါင်းစဉ်:</strong> ${escapeHtml(importedData.title)}</p>
+                    <p><strong>📝 အကျဉ်းချုပ်:</strong> ${escapeHtml(importedData.summary)}</p>
+                    <p><strong>🏷️ အမျိုးအစား:</strong> ${importedData.category}</p>
+                    <p><strong>🔗 ရင်းမြစ်:</strong> ${importedData.source}</p>
+                    ${importedData.image_url ? `<img src="${importedData.image_url}" style="max-width:100%; max-height:150px;">` : '<p>🖼️ ပုံမရှိပါ</p>'}
+                `;
+                document.getElementById('previewArea').style.display = 'block';
+                showMessage('✅ သတင်းအချက်အလက် ယူပြီးပါပြီ', 'success');
+                
+            } catch (err) {
+                console.error('Fetch error:', err);
+                showMessage('❌ သတင်းယူ၍မရပါ။ လင့်ခ်ကိုစစ်ဆေးပါ။', 'error');
+            } finally {
+                document.getElementById('loadingMsg').style.display = 'none';
+            }
+        };
+        
+        window.importNews = async function() {
+            if (!importedData) {
+                showMessage('သတင်းအချက်အလက် မရှိပါ။ အရင်ဆုံး ယူမည်နှိပ်ပါ။', 'error');
+                return;
             }
             
-            window.scrollToTop = function() { window.scrollTo({ top: 0, behavior: 'smooth' }); };
-            const backBtn = document.querySelector('.back-to-top');
-            if (backBtn) {
-                window.addEventListener('scroll', () => {
-                    if (window.scrollY > 300) backBtn.classList.add('show');
-                    else backBtn.classList.remove('show');
-                });
+            try {
+                const newsData = {
+                    title: importedData.title,
+                    summary: importedData.summary,
+                    content: importedData.content || importedData.summary,
+                    category: importedData.category,
+                    image_url: importedData.image_url,
+                    source: importedData.source,
+                    reliability: importedData.reliability
+                };
+                
+                const { error } = await supabaseClient
+                    .from('news')
+                    .insert([newsData]);
+                
+                if (error) throw error;
+                
+                showMessage('✅ သတင်းအသစ် အောင်မြင်စွာ သိမ်းပြီးပါပြီ!', 'success');
+                clearPreview();
+                document.getElementById('newsUrl').value = '';
+                loadNewsList();
+                
+            } catch (err) {
+                console.error('Import error:', err);
+                showMessage('❌ သိမ်းရာတွင် အမှား: ' + err.message, 'error');
             }
+        };
+        
+        window.clearPreview = function() {
+            document.getElementById('previewArea').style.display = 'none';
+            importedData = null;
+        };
+        
+        // ============ LOAD NEWS LIST ============
+        async function loadNewsList() {
+            if (!supabaseClient) return;
             
-            function updateTime() {
-                const el = document.getElementById('currentTime');
-                if (el) {
-                    const now = new Date();
-                    el.textContent = now.toLocaleDateString('my-MM', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            try {
+                const { data, error } = await supabaseClient
+                    .from('news')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                document.getElementById('totalCount').textContent = data.length;
+                
+                if (data.length === 0) {
+                    document.getElementById('newsTableContainer').innerHTML = '<div class="loading">📭 သတင်းမရှိသေးပါ</div>';
+                    return;
                 }
+                
+                let html = '<table><thead><tr><th>ID</th><th>ခေါင်းစဉ်</th><th>အမျိုးအစား</th><th>ရင်းမြစ်</th><th>လုပ်ဆောင်ချက်</th></tr></thead><tbody>';
+                for (const news of data) {
+                    html += `<tr>
+                        <td>${news.id}</td>
+                        <td style="max-width:250px;">${escapeHtml(news.title)}</td>
+                        <td>${escapeHtml(news.category || '-')}</td>
+                        <td>${escapeHtml(news.source || '-')}</td>
+                        <td><button class="btn btn-danger" onclick="deleteNews(${news.id})" style="padding:5px 10px;">🗑️ ဖျက်</button></td>
+                    </tr>`;
+                }
+                html += '</tbody></table>';
+                document.getElementById('newsTableContainer').innerHTML = html;
+                
+            } catch (err) {
+                console.error('Load error:', err);
+                document.getElementById('newsTableContainer').innerHTML = '<div class="loading">❌ သတင်းများ ရယူ၍မရပါ</div>';
             }
-            updateTime();
-            setInterval(updateTime, 1000);
+        }
+        
+        window.deleteNews = async function(id) {
+            if (!confirm('ဖျက်မှာ သေချာလား?')) return;
             
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) target.scrollIntoView({ behavior: 'smooth' });
-                });
-            });
-            
-            loadNews();
-            console.log('✅ Myanmar Tech News Frontend Ready!');
-        })();
+            try {
+                const { error } = await supabaseClient
+                    .from('news')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                showMessage('🗑️ သတင်းဖျက်ပြီးပါပြီ', 'success');
+                loadNewsList();
+                
+            } catch (err) {
+                console.error('Delete error:', err);
+                showMessage('ဖျက်ရာတွင် အမှား: ' + err.message, 'error');
+            }
+        };
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // ============ INITIALIZE ============
+        async function init() {
+            const isAuth = await checkAdminAuth();
+            if (isAuth) {
+                loadNewsList();
+                console.log('✅ Admin Panel Ready');
+            }
+        }
+        
+        init();
     </script>
 </body>
 </html>
