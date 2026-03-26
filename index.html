@@ -168,24 +168,45 @@
         }
         
         function renderAllNews(newsArray) {
-            // Search results
-            const searchContainer = document.getElementById('searchResults');
-            if (searchContainer) {
-                if (newsArray.length === 0) {
-                    searchContainer.innerHTML = '<div style="text-align:center; padding:2rem;">📭 သတင်းမရှိသေးပါ</div>';
-                } else {
-                    searchContainer.innerHTML = newsArray.map(n => `
-                        <div class="result-card">
-                            <h3>${escapeHtml(n.title)}</h3>
-                            <p class="snippet">${escapeHtml(n.summary)}</p>
-                            <div class="result-footer">
-                                <span class="reliability-badge ${n.reliability || 'medium'}">${getReliabilityText(n.reliability)}</span>
-                                <button class="save-btn" onclick="saveFavorite(${n.id}, '${escapeHtml(n.title)}')">⭐ မှတ်သားရန်</button>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-            }
+    // Search results
+    const searchContainer = document.getElementById('searchResults');
+    if (searchContainer) {
+        if (newsArray.length === 0) {
+            searchContainer.innerHTML = '<div style="text-align:center; padding:2rem;">📭 သတင်းမရှိသေးပါ</div>';
+        } else {
+            searchContainer.innerHTML = newsArray.map(n => `
+                <div class="result-card">
+                    ${n.image_url ? `<img src="${escapeHtml(n.image_url)}" style="width:100%; height:160px; object-fit:cover; border-radius:8px; margin-bottom:12px;" onerror="this.style.display='none'">` : ''}
+                    <h3><a href="news-detail.html?id=${n.id}" style="text-decoration:none; color:#0f172a;">${escapeHtml(n.title)}</a></h3>
+                    <p class="snippet">${escapeHtml(n.summary)}</p>
+                    <div class="result-footer">
+                        <span class="reliability-badge ${n.reliability || 'medium'}">${getReliabilityText(n.reliability)}</span>
+                        <button class="save-btn" onclick="saveFavorite(${n.id}, '${escapeHtml(n.title)}')">⭐ မှတ်သားရန်</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+    
+    // Latest news
+    const latestContainer = document.getElementById('latestNews');
+    if (latestContainer) {
+        const latestNews = newsArray.slice(0, 3);
+        if (latestNews.length === 0) {
+            latestContainer.innerHTML = '<div style="text-align:center; padding:2rem;">📭 သတင်းမရှိသေးပါ</div>';
+        } else {
+            latestContainer.innerHTML = latestNews.map(n => `
+                <div class="news-card">
+                    ${n.image_url ? `<img src="${escapeHtml(n.image_url)}" style="width:100%; height:140px; object-fit:cover; border-radius:8px; margin-bottom:12px;" onerror="this.style.display='none'">` : ''}
+                    <div class="news-badge">📡 ${escapeHtml(n.source || 'Myanmar Tech News')}</div>
+                    <h3><a href="news-detail.html?id=${n.id}" style="text-decoration:none; color:#0f172a;">${escapeHtml(n.title)}</a></h3>
+                    <p class="news-summary">${escapeHtml(n.summary)}</p>
+                    <a href="news-detail.html?id=${n.id}" class="read-more">ဆက်ဖတ်ရန် →</a>
+                </div>
+            `).join('');
+        }
+    }
+}
             
             // Latest news
             const latestContainer = document.getElementById('latestNews');
