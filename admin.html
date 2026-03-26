@@ -14,6 +14,11 @@
         th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
     </style>
 </head>
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <input type="text" id="newsLink" placeholder="သတင်း Link ကို ဒီမှာ Paste လုပ်ပါ (ဥပမာ- BBC, VOA...) ">
+    <button onclick="fetchMetadata()" style="width: 120px; background: #10b981;">Fetch</button>
+</div>
+<hr>
 <body class="container section">
     <h1>📝 Admin Panel</h1>
     <div class="admin-box">
