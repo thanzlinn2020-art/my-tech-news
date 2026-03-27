@@ -50,7 +50,7 @@
                 <li><a href="#search">ရှာဖွေမှု</a></li>
                 <li><a href="#news">သတင်းများ</a></li>
                 <li><a href="#about">အကြောင်း</a></li>
-                <li><a href="admin.html">Admin</a></li>
+                <li><a href="panel.html">Admin</a></li>
             </ul>
         </div>
     </nav>
@@ -91,7 +91,7 @@
         <div class="container">
             <div class="footer-content">
                 <div><h3>🇲🇲 မြန်မာနည်းပညာသတင်း</h3><p>မြန်မာနိုင်ငံရဲ့ နံပါတ် ၁ နည်းပညာသတင်းဌာန</p></div>
-                <div><h3>🔗 လင့်ခ်များ</h3><ul style="list-style:none"><li><a href="#home" style="color:#94a3b8">ပင်မ</a></li><li><a href="#search" style="color:#94a3b8">ရှာဖွေမှု</a></li><li><a href="#news" style="color:#94a3b8">သတင်းများ</a></li><li><a href="admin.html" style="color:#94a3b8">Admin</a></li></ul></div>
+                <div><h3>🔗 လင့်ခ်များ</h3><ul style="list-style:none"><li><a href="#home" style="color:#94a3b8">ပင်မ</a></li><li><a href="#search" style="color:#94a3b8">ရှာဖွေမှု</a></li><li><a href="#news" style="color:#94a3b8">သတင်းများ</a></li><li><a href="panel.html" style="color:#94a3b8">Admin</a></li></ul></div>
                 <div><h3>⏰ အချိန်</h3><p id="currentTime"></p></div>
             </div>
             <div class="footer-bottom"><p>&copy; 2025 မြန်မာနည်းပညာသတင်း | Powered by Supabase</p></div>
@@ -112,11 +112,8 @@
         
         async function loadNews() {
             const { data, error } = await supabase.from('news').select('*').order('created_at', { ascending: false });
-            if(error || !data || data.length===0) {
-                renderAll(fallbackNews);
-            } else {
-                renderAll(data);
-            }
+            if(error || !data || data.length===0) renderAll(fallbackNews);
+            else renderAll(data);
         }
         
         function renderAll(news) {
@@ -127,7 +124,7 @@
                     searchContainer.innerHTML = news.map(n => `
                         <div class="result-card">
                             ${n.image_url ? `<img src="${n.image_url}" style="width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:12px;" onerror="this.style.display='none'">` : ''}
-                            <h3><a href="news-detail.html?id=${n.id}">${escapeHtml(n.title)}</a></h3>
+                            <h3><a href="#" onclick="viewNews(${n.id})">${escapeHtml(n.title)}</a></h3>
                             <p class="snippet">${escapeHtml(n.summary)}</p>
                             <div class="result-footer">
                                 <span class="reliability-badge ${n.reliability||'medium'}">${n.reliability==='high'?'✅ အလွန်ယုံကြည်ရ':n.reliability==='medium'?'📊 ယုံကြည်ရ':'⚠️ စစ်ဆေးရန်'}</span>
@@ -146,22 +143,25 @@
                         <div class="news-card">
                             ${n.image_url ? `<img src="${n.image_url}" style="width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:12px;" onerror="this.style.display='none'">` : ''}
                             <div class="news-badge">📡 ${escapeHtml(n.source||'Myanmar Tech News')}</div>
-                            <h3><a href="news-detail.html?id=${n.id}">${escapeHtml(n.title)}</a></h3>
+                            <h3><a href="#" onclick="viewNews(${n.id})">${escapeHtml(n.title)}</a></h3>
                             <p class="news-summary">${escapeHtml(n.summary)}</p>
-                            <a href="news-detail.html?id=${n.id}" class="read-more">ဆက်ဖတ်ရန် →</a>
+                            <a href="#" onclick="viewNews(${n.id})" class="read-more">ဆက်ဖတ်ရန် →</a>
                         </div>
                     `).join('');
                 }
             }
         }
         
+        window.viewNews = async function(id) {
+            const { data } = await supabase.from('news').select('*').eq('id', id).single();
+            if(data) alert(`📰 ${data.title}\n\n${data.content || data.summary}`);
+            else alert('သတင်းမရှိပါ');
+        };
+        
         function saveFavorite(id) {
             let favs = JSON.parse(localStorage.getItem('favorites') || '[]');
-            if(!favs.some(f=>f.id===id)) {
-                favs.push({id, time:new Date().toISOString()});
-                localStorage.setItem('favorites', JSON.stringify(favs));
-                alert('✓ မှတ်သားပြီးပါပြီ');
-            } else alert('မှတ်သားထားပြီးဖြစ်ပါသည်');
+            if(!favs.some(f=>f.id===id)) { favs.push({id}); localStorage.setItem('favorites', JSON.stringify(favs)); alert('✓ မှတ်သားပြီးပါပြီ'); }
+            else alert('မှတ်သားထားပြီးဖြစ်ပါသည်');
         }
         
         function escapeHtml(t){if(!t)return '';let d=document.createElement('div');d.textContent=t;return d.innerHTML;}
@@ -176,12 +176,8 @@
         function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'});}
         window.addEventListener('scroll',()=>{let btn=document.querySelector('.back-to-top');if(btn)window.scrollY>300?btn.classList.add('show'):btn.classList.remove('show');});
         
-        function updateTime(){
-            let el=document.getElementById('currentTime');
-            if(el)el.textContent=new Date().toLocaleDateString('my-MM',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
-        }
-        updateTime();
-        setInterval(updateTime,1000);
+        function updateTime(){let el=document.getElementById('currentTime');if(el)el.textContent=new Date().toLocaleDateString('my-MM',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});}
+        updateTime();setInterval(updateTime,1000);
         
         loadNews();
     </script>
