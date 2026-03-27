@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:Arial,sans-serif;background:#f1f5f9;padding:15px}
+        .container{max-width:1000px;margin:0 auto}
+        .header{background:#1e293b;color:#fff;padding:15px;border-radius:12px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+        .header a{color:#3b82f6;background:#fff;padding:6px12px;border-radius:6px;text-decoration:none}
+        button{padding:8px16px;border:none;border-radius:6px;cursor:pointer;margin-right:8px}
+        .btn-blue{background:#3b82f6;color:#fff}
+        .btn-red{background:#ef4444;color:#fff}
+        .btn-green{background:#10b981;color:#fff}
+        .btn-gray{background:#64748b;color:#fff}
+        input,textarea,select{width:100%;padding:10px;margin:8px 0;border:1px solid #cbd5e1;border-radius:6px}
+        .card{background:#fff;border-radius:12px;padding:20px;margin-bottom:20px}
+        .tab{padding:8px16px;background:#e2e8f0;border:none;border-radius:8px;margin-right:8px;cursor:pointer}
+        .tab.active{background:#3b82f6;color:#fff}
+        .hidden{display:none}
+        table{width:100%;border-collapse:collapse}
+        th,td{padding:10px;text-align:left;border-bottom:1px solid #e2e8f0}
+        .msg{position:fixed;top:15px;right:15px;padding:10px20px;border-radius:8px;color:#fff;z-index:1000}
+        .msg-success{background:#10b981}
+        .msg-error{background:#ef4444}
+        .loading{text-align:center;padding:20px;color:#3b82f6}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📝 Admin Panel</h1>
+        <a href="index.html">← Frontend</a>
+    </div>
+    
+    <div>
+        <button class="tab active" id="tab1">➕ Add News</button>
+        <button class="tab" id="tab2">🤖 Auto Import</button>
+        <button class="tab" id="tab3">📋 News List</button>
+    </div>
+    
+    <div id="panel1" class="card">
+        <h2>Add New News</h2>
+        <input type="text" id="title" placeholder="Title *">
+        <textarea id="summary" rows="2" placeholder="Summary *"></textarea>
+        <textarea id="content" rows="3" placeholder="Full Content"></textarea>
+        <input type="text" id="category" placeholder="Category (AI, 5G, Mobile)">
+        <input type="text" id="source" placeholder="Source">
+        <input type="text" id="image" placeholder="Image URL">
+        <select id="reliability">
+            <option value="high">High Reliability</option>
+            <option value="medium" selected>Medium Reliability</option>
+            <option value="low">Low Reliability</option>
+        </select>
+        <button class="btn-blue" id="saveBtn">💾 Save</button>
+        <button class="btn-gray" id="clearBtn">🗑️ Clear</button>
+    </div>
+    
+    <div id="panel2" class="card hidden">
+        <h2>Auto Import from URL</h2>
+        <input type="url" id="urlInput" placeholder="https://www.bbc.com/burmese/...">
+        <button class="btn-blue" id="fetchBtn">🔍 Fetch</button>
+        <div id="fetchLoader" class="loading hidden">Fetching...</div>
+        <div id="previewBox" style="margin-top:20px; display:none;"></div>
+    </div>
+    
+    <div id="panel3" class="card hidden">
+        <h2>News List (<span id="total">0</span>)</h2>
+        <div id="listContainer">Loading...</div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://tlmzcasltbihfbnupguq.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsbXpjYXNsdGJpaGZibnVwZ3VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNzQ5NTEsImV4cCI6MjA4OTk1MDk1MX0.ImMh9EDzX4TyKf0zxLLTcr8xcvtF3eUvPwhki2EOC3Q';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let fetchedData = null;
+
+function showMsg(msg, type) {
+    const old = document.getElementById('toastMsg');
+    if(old) old.remove();
+    const div = document.createElement('div');
+    div.id = 'toastMsg';
+    div.className = `msg msg-${type}`;
+    div.textContent = msg;
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 3000);
+}
+
+// Tabs
+document.getElementById('tab1').onclick = () => {
+    document.getElementById('panel1').classList.remove('hidden');
+    document.getElementById('panel2').classList.add('hidden');
+    document.getElementById('panel3').classList.add('hidden');
+    document.getElementById('tab1').classList.add('active');
+    document.getElementById('tab2').classList.remove('active');
+    document.getElementById('tab3').classList.remove('active');
+};
+document.getElementById('tab2').onclick = () => {
+    document.getElementById('panel1').classList.add('hidden');
+    document.getElementById('panel2').classList.remove('hidden');
+    document.getElementById('panel3').classList.add('hidden');
+    document.getElementById('tab1').classList.remove('active');
+    document.getElementById('tab2').classList.add('active');
+    document.getElementById('tab3').classList.remove('active');
+};
+document.getElementById('tab3').onclick = () => {
+    document.getElementById('panel1').classList.add('hidden');
+    document.getElementById('panel2').classList.add('hidden');
+    document.getElementById('panel3').classList.remove('hidden');
+    document.getElementById('tab1').classList.remove('active');
+    document.getElementById('tab2').classList.remove('active');
+    document.getElementById('tab3').classList.add('active');
+    loadList();
+};
+
+// Save News
+document.getElementById('saveBtn').onclick = async () => {
+    const title = document.getElementById('title').value.trim();
+    const summary = document.getElementById('summary').value.trim();
+    if(!title || !summary) { showMsg('Title and Summary required', 'error'); return; }
+    const data = {
+        title, summary,
+        content: document.getElementById('content').value.trim() || summary,
+        category: document.getElementById('category').value.trim() || 'Tech',
+        image_url: document.getElementById('image').value.trim(),
+        source: document.getElementById('source').value.trim() || 'Myanmar Tech',
+        reliability: document.getElementById('reliability').value
+    };
+    const { error } = await supabase.from('news').insert([data]);
+    if(error) showMsg('Error: ' + error.message, 'error');
+    else { showMsg('Saved!', 'success'); clearForm(); loadList(); }
+};
+
+function clearForm() {
+    document.getElementById('title').value = '';
+    document.getElementById('summary').value = '';
+    document.getElementById('content').value = '';
+    document.getElementById('category').value = '';
+    document.getElementById('source').value = '';
+    document.getElementById('image').value = '';
+    document.getElementById('reliability').value = 'medium';
+}
+document.getElementById('clearBtn').onclick = clearForm;
+
+// Fetch News
+document.getElementById('fetchBtn').onclick = async () => {
+    const url = document.getElementById('urlInput').value.trim();
+    if(!url) { showMsg('Enter URL', 'error'); return; }
+    document.getElementById('fetchLoader').classList.remove('hidden');
+    document.getElementById('previewBox').style.display = 'none';
+    try {
+        const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
+        const data = await res.json();
+        const doc = new DOMParser().parseFromString(data.contents, 'text/html');
+        let title = doc.querySelector('meta[property="og:title"]')?.content || doc.querySelector('title')?.innerText || 'No title';
+        let desc = doc.querySelector('meta[property="og:description"]')?.content || doc.querySelector('meta[name="description"]')?.content || 'No description';
+        let img = doc.querySelector('meta[property="og:image"]')?.content || '';
+        let source = new URL(url).hostname.replace('www.', '');
+        let cat = 'Tech';
+        let txt = (title+desc).toLowerCase();
+        if(txt.includes('5g')) cat = '5G';
+        else if(txt.includes('ai')) cat = 'AI';
+        else if(txt.includes('mobile')) cat = 'Mobile';
+        fetchedData = { title: title.slice(0,200), summary: desc.slice(0,300), image_url: img, source, category: cat };
+        document.getElementById('previewBox').innerHTML = `
+            <p><strong>Title:</strong> ${escapeHtml(fetchedData.title)}</p>
+            <p><strong>Summary:</strong> ${escapeHtml(fetchedData.summary)}</p>
+            <p><strong>Category:</strong> ${fetchedData.category}</p>
+            <p><strong>Source:</strong> ${fetchedData.source}</p>
+            ${fetchedData.image_url ? `<img src="${fetchedData.image_url}" style="max-width:100%; max-height:150px;">` : ''}
+            <button class="btn-green" id="importBtn" style="margin-top:10px">📥 Import</button>
+            <button class="btn-gray" id="cancelPreviewBtn" style="margin-top:10px">Cancel</button>
+        `;
+        document.getElementById('previewBox').style.display = 'block';
+        document.getElementById('importBtn').onclick = async () => {
+            if(!fetchedData) return;
+            const { error } = await supabase.from('news').insert([{
+                title: fetchedData.title, summary: fetchedData.summary, content: fetchedData.summary,
+                category: fetchedData.category, image_url: fetchedData.image_url,
+                source: fetchedData.source, reliability: 'medium'
+            }]);
+            if(error) showMsg('Error: ' + error.message, 'error');
+            else { showMsg('Imported!', 'success'); document.getElementById('previewBox').style.display = 'none'; document.getElementById('urlInput').value = ''; fetchedData = null; loadList(); }
+        };
+        document.getElementById('cancelPreviewBtn').onclick = () => { document.getElementById('previewBox').style.display = 'none'; fetchedData = null; };
+    } catch(e) { showMsg('Failed to fetch', 'error'); }
+    finally { document.getElementById('fetchLoader').classList.add('hidden'); }
+};
+
+// Load List
+async function loadList() {
+    const { data, error } = await supabase.from('news').select('*').order('created_at', { ascending: false });
+    if(error) { document.getElementById('listContainer').innerHTML = 'Error loading'; return; }
+    document.getElementById('total').innerText = data.length;
+    if(data.length === 0) { document.getElementById('listContainer').innerHTML = 'No news yet'; return; }
+    let html = ' 表 <thead> <tr><th>ID</th><th>Title</th><th>Category</th><th></th> </thead> <tbody>';
+    for(const n of data) {
+        html += ` capture<td>${n.id}</td><td>${escapeHtml(n.title)}</td><td>${escapeHtml(n.category||'-')}</td><td><button class="delBtn" data-id="${n.id}" style="background:#ef4444;color:#fff;border:none;padding:5px10px;border-radius:5px">Delete</button></td> </tr>`;
+    }
+    html += '</tbody> ⁣';
+    document.getElementById('listContainer').innerHTML = html;
+    document.querySelectorAll('.delBtn').forEach(btn => {
+        btn.onclick = async () => {
+            const id = parseInt(btn.getAttribute('data-id'));
+            if(confirm('Delete?')) {
+                const { error } = await supabase.from('news').delete().eq('id', id);
+                if(error) showMsg('Error: ' + error.message, 'error');
+                else { showMsg('Deleted', 'success'); loadList(); }
+            }
+        };
+    });
+}
+
+function escapeHtml(t){ if(!t) return ''; let d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
+
+loadList();
+</script>
+</body>
+</html>
